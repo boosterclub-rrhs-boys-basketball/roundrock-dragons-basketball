@@ -1,4 +1,7 @@
-import type { APIRoute } from "astro";
+interface Env {
+  SQUARE_ACCESS_TOKEN?: string;
+  SQUARE_LOCATION_ID?: string;
+}
 
 type SquareCatalogItem = {
   type: string;
@@ -7,7 +10,6 @@ type SquareCatalogItem = {
     name?: string;
     description?: string;
     variations?: Array<{
-      id: string;
       item_variation_data?: {
         price_money?: { amount?: number; currency?: string };
       };
@@ -15,18 +17,17 @@ type SquareCatalogItem = {
   };
 };
 
-export const GET: APIRoute = async ({ locals }) => {
-  const runtime = locals.runtime as { env?: Record<string, string> } | undefined;
-  const accessToken = runtime?.env?.SQUARE_ACCESS_TOKEN;
-  const locationId = runtime?.env?.SQUARE_LOCATION_ID;
+export const onRequestGet: PagesFunction<Env> = async (context) => {
+  const accessToken = context.env.SQUARE_ACCESS_TOKEN;
+  const locationId = context.env.SQUARE_LOCATION_ID;
 
   if (!accessToken || !locationId) {
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         products: [],
         error: "Square is not configured. Set SQUARE_ACCESS_TOKEN and SQUARE_LOCATION_ID in Cloudflare.",
-      }),
-      { status: 503, headers: { "Content-Type": "application/json" } }
+      },
+      { status: 503 }
     );
   }
 
@@ -62,16 +63,14 @@ export const GET: APIRoute = async ({ locals }) => {
         };
       });
 
-    return new Response(JSON.stringify({ products }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return Response.json({ products });
   } catch (error) {
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         products: [],
         error: error instanceof Error ? error.message : "Failed to load store products",
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      },
+      { status: 500 }
     );
   }
 };

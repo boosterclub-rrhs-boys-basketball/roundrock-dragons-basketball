@@ -1,20 +1,5 @@
 {
+	"name": "roundrock-dragons-basketball",
 	"compatibility_date": "2026-06-07",
-	"compatibility_flags": ["global_fetch_strictly_public"],
-	"name": "roundrockbasketball",
-	"main": "@astrojs/cloudflare/entrypoints/server",
-	"assets": {
-		"directory": "./dist",
-		"binding": "ASSETS"
-	},
-	"observability": {
-		"enabled": true
-	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "rrhs-db",
-			"database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
-		}
-	]
+	"pages_build_output_dir": "./dist"
 }
