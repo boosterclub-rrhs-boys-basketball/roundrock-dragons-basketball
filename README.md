@@ -41,21 +41,32 @@ Open http://localhost:4321
 
 ## Deploy to Cloudflare Pages
 
-1. Push this `website/` folder to GitHub
-2. In [Cloudflare Dashboard](https://dash.cloudflare.com) → Workers & Pages → Create → Connect to Git
-3. Build settings:
-   - **Framework preset:** Astro
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-4. Add environment variables (Settings → Environment variables):
-   - `SQUARE_ACCESS_TOKEN` — from [Square Developer Dashboard](https://developer.squareup.com)
-   - `SQUARE_LOCATION_ID` — your Square location ID
-5. (Optional) Create D1 database for Phase 2:
-   ```bash
-   npx wrangler d1 create rrhs-db
-   npx wrangler d1 execute rrhs-db --file=./schema.sql
-   ```
-   Update `database_id` in `wrangler.jsonc`
+### Option A: Connect GitHub (recommended for auto-deploys)
+
+1. Push this repo to GitHub (see below)
+2. Open [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **roundrock-dragons-basketball**
+3. Go to **Settings** → **Builds & deployments** → **Connect to Git**
+4. Select your GitHub repo and use these build settings:
+
+| Setting | Value |
+|---------|-------|
+| Production branch | `master` |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Root directory | `/` (repo root is the website folder) |
+
+5. Add environment variables under **Settings** → **Environment variables**:
+   - `SQUARE_ACCESS_TOKEN`
+   - `SQUARE_LOCATION_ID`
+
+### Option B: Manual deploy via Wrangler
+
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name roundrock-dragons-basketball --branch master
+```
+
+**Live preview:** https://roundrock-dragons-basketball.pages.dev
 
 ## Custom domain
 
