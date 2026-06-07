@@ -1,0 +1,70 @@
+---
+import { footerLinks, site } from "../data/site";
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-dragon-dark text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div>
+        <h3 class="font-display text-xl font-bold mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          {
+            footerLinks.map((link) => (
+              <li>
+                <a href={link.href} class="text-white/80 hover:text-white transition-colors">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-display text-xl font-bold mb-4">Contact</h3>
+        <address class="not-italic text-white/80 space-y-2">
+          <p>{site.address.line1}</p>
+          <p>{site.address.line2}</p>
+          <p>
+            {site.address.city}, {site.address.state} {site.address.zip}
+          </p>
+          <p>
+            <a href={`tel:${site.phone.replace(/\D/g, "")}`} class="hover:text-white">
+              {site.phone}
+            </a>
+          </p>
+          <p>
+            <a href={`mailto:${site.email}`} class="hover:text-white">
+              {site.email}
+            </a>
+          </p>
+        </address>
+        <a
+          href={site.facebook}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 mt-4 text-white/80 hover:text-white"
+        >
+          Follow us on Facebook
+        </a>
+      </div>
+
+      <div>
+        <h3 class="font-display text-xl font-bold mb-4">Our Mission</h3>
+        <p class="text-white/80 leading-relaxed">{site.mission}</p>
+      </div>
+    </div>
+
+    <div class="mt-10 pt-8 border-t border-white/10 text-sm text-white/60 space-y-3">
+      <p>{site.disclaimer}</p>
+      <div class="flex flex-wrap gap-4 items-center justify-between">
+        <p>© {year} Round Rock High School Boys Basketball Booster Club. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="/privacy" class="hover:text-white">Privacy Policy</a>
+          <a href="/terms" class="hover:text-white">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

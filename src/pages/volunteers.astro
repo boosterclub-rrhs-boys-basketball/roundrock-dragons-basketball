@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Volunteers" description="Volunteer with the Round Rock Dragons booster club.">
+  <PageHero title="Volunteers" subtitle="Help make game day and events run smoothly" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-600 text-lg">
+        We rely on volunteers for concessions, game operations, fundraising events, and tournament support.
+        Every hour helps our program thrive.
+      </p>
+      <a
+        href={`mailto:${site.email}?subject=Volunteer Interest`}
+        class="inline-flex mt-8 px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold"
+      >
+        Sign Up to Volunteer
+      </a>
+    </div>
+  </section>
+</BaseLayout>

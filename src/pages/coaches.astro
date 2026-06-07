@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { coaches } from "../data/coaches";
+---
+
+<BaseLayout title="Coaches" description="Meet the Round Rock Dragons coaching staff.">
+  <PageHero title="Our Coaches" subtitle="Leaders who build champions on and off the court" />
+
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      {
+        coaches.map((coach) => (
+          <article class:list={["rounded-2xl overflow-hidden border", coach.featured ? "border-dragon-maroon shadow-lg" : "border-gray-200"]}>
+            <div class="grid lg:grid-cols-3">
+              <div class="lg:col-span-1 bg-dragon-dark text-white p-8">
+                <h2 class="font-display text-3xl font-bold">{coach.name}</h2>
+                <p class="text-dragon-gold font-semibold mt-1">{coach.title}</p>
+                {coach.team && <p class="text-white/70 mt-1">{coach.team}</p>}
+                <p class="mt-6 text-sm text-white/80">{coach.credentials}</p>
+                {
+                  coach.stats.length > 0 && (
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                      {coach.stats.map((stat) => (
+                        <div>
+                          <div class="font-display text-2xl font-bold">{stat.value}</div>
+                          <div class="text-xs text-white/70">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+              </div>
+              <div class="lg:col-span-2 p-8">
+                <div class="text-gray-600 leading-relaxed whitespace-pre-line">{coach.bio}</div>
+                {
+                  coach.careerHighlights && (
+                    <ul class="mt-6 space-y-2 text-gray-600 list-disc list-inside">
+                      {coach.careerHighlights.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  )
+                }
+                {
+                  coach.quote && (
+                    <blockquote class="mt-6 border-l-4 border-dragon-maroon pl-4 italic text-gray-700">
+                      "{coach.quote}"
+                    </blockquote>
+                  )
+                }
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

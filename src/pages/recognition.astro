@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<BaseLayout title="Recognition" description="Recognizing supporters of Round Rock Dragons basketball.">
+  <PageHero title="Recognition" subtitle="Celebrating those who support our program" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600">
+      <p class="text-lg">
+        We recognize Champion members, outstanding volunteers, and community partners who go above and beyond
+        for our program. Visit our Members and Sponsors pages to see our Dragons family.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/members" class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">View Members</a>
+        <a href="/sponsors" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">View Sponsors</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<BaseLayout title="Parents" description="Parent portal for Round Rock Dragons basketball.">
+  <PageHero title="Parent Portal" subtitle="Access orders, forms, calendar, and team updates" />
+
+  <section class="py-16">
+    <div class="max-w-lg mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+        <h2 class="font-display text-xl font-bold text-dragon-maroon">Sign In</h2>
+        <p class="mt-2 text-gray-600 text-sm">
+          Parent login, ticket management, and order history will be available in Phase 2 of the migration.
+          This replaces the Supabase Auth system with Cloudflare D1 + secure session tokens at zero monthly cost.
+        </p>
+
+        <form class="mt-6 space-y-4" action="/api/auth/login" method="post">
+          <div>
+            <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              placeholder="parent@example.com"
+            />
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full px-4 py-3 rounded-md bg-dragon-maroon text-white font-bold hover:bg-dragon-maroon-dark"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p class="mt-6 text-xs text-gray-500 text-center">
+          Need access? Contact <a href="mailto:boosterclub@roundrockbasketball.org" class="text-dragon-maroon">boosterclub@roundrockbasketball.org</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

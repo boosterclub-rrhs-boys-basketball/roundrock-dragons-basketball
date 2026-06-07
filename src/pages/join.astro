@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Join the Booster Club" description="Join the Round Rock Dragons basketball booster club.">
+  <PageHero title="Join the Booster Club" subtitle="Support our student-athletes and become part of the Dragons family" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-gray-600 text-lg leading-relaxed">
+        Membership in the RRHS Boys Basketball Booster Club helps fund uniforms, tournaments, team building,
+        and program enhancements. Your support directly benefits every player in our program.
+      </p>
+
+      <div class="mt-10 rounded-2xl bg-dragon-maroon text-white p-8">
+        <h2 class="font-display text-2xl font-bold">Ready to Join?</h2>
+        <p class="mt-3 text-white/90">Contact us to get started with membership.</p>
+        <a
+          href={`mailto:${site.email}?subject=Booster Club Membership`}
+          class="inline-flex mt-6 px-6 py-3 rounded-md bg-white text-dragon-maroon font-bold"
+        >
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

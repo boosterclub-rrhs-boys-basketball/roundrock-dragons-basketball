@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="About Us" description="About the Round Rock High School Boys Basketball Booster Club.">
+  <PageHero title="About Us" subtitle="Supporting excellence in Round Rock Dragons basketball" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-gray-600 text-lg leading-relaxed">
+      <p>
+        The Round Rock High School Boys Basketball Booster Club is a volunteer organization dedicated to
+        supporting our student-athletes, coaches, and families. We raise funds, organize events, and build
+        community around Dragons basketball.
+      </p>
+      <p>{site.mission}</p>
+      <p class="text-sm text-gray-500">{site.disclaimer}</p>
+    </div>
+  </section>
+</BaseLayout>

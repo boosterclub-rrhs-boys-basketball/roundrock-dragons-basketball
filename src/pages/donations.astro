@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Donations" description="Support Round Rock Dragons basketball with a donation.">
+  <PageHero title="Support Our Team" subtitle="Your donation helps our student-athletes succeed on and off the court" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-600 text-lg">
+        Donations fund program needs including equipment, travel, team building, and scholarships.
+        Contact us to make a donation or explore sponsorship opportunities.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href={`mailto:${site.email}?subject=Donation Inquiry`} class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">
+          Donate via Contact
+        </a>
+        <a href="/sponsors" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">
+          Become a Sponsor
+        </a>
+      </div>
+      <p class="mt-8 text-sm text-gray-500">
+        Online donation checkout via Square can be enabled in Phase 2.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

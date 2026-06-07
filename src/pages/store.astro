@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<BaseLayout title="Rock Hoops Store" description="Shop spirit wear, event tickets, and booster club products.">
+  <PageHero title="Rock Hoops Store" subtitle="Shop our products, event tickets, and spirit wear" />
+
+  <section class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="rounded-2xl border border-gray-200 bg-gray-50 p-10">
+        <h2 class="font-display text-2xl font-bold text-dragon-maroon">Square Store Integration</h2>
+        <p class="mt-4 text-gray-600 leading-relaxed">
+          The store connects to Square for payment processing. Once you add your Square credentials as Cloudflare
+          environment variables, products will load here automatically via the Square Catalog API.
+        </p>
+
+        <div id="store-status" class="mt-6 text-sm text-gray-500">Loading products...</div>
+        <div id="store-products" class="mt-8 grid gap-6 sm:grid-cols-2 text-left"></div>
+
+        <noscript>
+          <p class="mt-6 text-gray-600">
+            Enable JavaScript to browse products, or visit your Square Online store directly.
+          </p>
+        </noscript>
+      </div>
+
+      <div class="mt-10 text-left rounded-xl bg-dragon-dark text-white p-6">
+        <h3 class="font-display text-lg font-bold">Setup for Booster Club Admins</h3>
+        <ol class="mt-4 space-y-2 text-sm text-white/80 list-decimal list-inside">
+          <li>Add <code class="text-dragon-gold">SQUARE_ACCESS_TOKEN</code> and <code class="text-dragon-gold">SQUARE_LOCATION_ID</code> in Cloudflare Pages settings.</li>
+          <li>Products are managed in your existing Square Dashboard — no Supabase needed.</li>
+          <li>Checkout uses Square Web Payments SDK (PCI-compliant, no card data on our servers).</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  async function loadStore() {
+    const status = document.getElementById("store-status");
+    const container = document.getElementById("store-products");
+
+    try {
+      const response = await fetch("/api/store/products");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to load products");
+      }
+
+      if (!data.products?.length) {
+        status!.textContent = "No products available yet. Add items in your Square Dashboard.";
+        return;
+      }
+
+      status!.textContent = `${data.products.length} products`;
+      container!.innerHTML = data.products
+        .map(
+          (product: { id: string; name: string; description?: string; price?: string }) => `
+          <article class="rounded-xl bg-white border border-gray-200 p-6">
+            <h3 class="font-display text-lg font-bold">${product.name}</h3>
+            ${product.description ? `<p class="mt-2 text-sm text-gray-600">${product.description}</p>` : ""}
+            ${product.price ? `<p class="mt-4 font-bold text-dragon-maroon">${product.price}</p>` : ""}
+          </article>
+        `
+        )
+        .join("");
+    } catch (error) {
+      status!.textContent =
+        error instanceof Error
+          ? error.message
+          : "Store not configured yet. Add Square credentials to Cloudflare environment variables.";
+    }
+  }
+
+  loadStore();
+</script>

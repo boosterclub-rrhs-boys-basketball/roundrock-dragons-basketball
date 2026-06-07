@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { sponsors, sponsorshipPackages } from "../data/sponsors";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Sponsors" description="Partner with Round Rock Dragons basketball.">
+  <PageHero
+    title="Partner with Champions"
+    subtitle="Join our community of businesses supporting Dragons basketball excellence"
+  />
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-wrap gap-4 justify-center">
+    <a href={`mailto:${site.email}?subject=Sponsorship Inquiry`} class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">
+      Become a Sponsor Today
+    </a>
+    <a href="/sponsor-packet.pdf" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">
+      Download Sponsor Packet
+    </a>
+  </div>
+
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold text-dragon-maroon text-center mb-10">Why Sponsor Dragons Basketball?</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {
+          [
+            { title: "5,000+ Reach", desc: "Students, families, and community members attend our games and events annually." },
+            { title: "Year-Round Exposure", desc: "Visibility during games, tournaments, and community events throughout the season." },
+            { title: "Digital Marketing", desc: "Featured on our website, social media, and digital communications." },
+            { title: "Community Impact", desc: "Support student-athlete development and show commitment to local education." },
+          ].map((item) => (
+            <div class="rounded-xl bg-white p-6 border border-gray-200 text-center">
+              <h3 class="font-display text-lg font-bold text-dragon-maroon">{item.title}</h3>
+              <p class="mt-2 text-sm text-gray-600">{item.desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold text-dragon-maroon text-center mb-10">Sponsorship Packages</h2>
+      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {
+          sponsorshipPackages.map((pkg) => (
+            <div class="rounded-2xl border border-gray-200 p-6 flex flex-col">
+              <h3 class="font-display text-xl font-bold">{pkg.name}</h3>
+              {"subtitle" in pkg && pkg.subtitle && <p class="text-sm text-gray-500">{pkg.subtitle}</p>}
+              <p class="font-display text-2xl text-dragon-maroon font-bold mt-2">{pkg.price}</p>
+              <ul class="mt-4 space-y-2 flex-1">
+                {pkg.highlights.map((item) => (
+                  <li class="text-sm text-gray-600 flex gap-2">
+                    <span class="text-dragon-maroon shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={`mailto:${site.email}?subject=${encodeURIComponent(pkg.name + " Sponsorship")}`}
+                class="mt-6 block text-center px-4 py-2 rounded-md bg-dragon-maroon text-white font-bold text-sm"
+              >
+                Choose This Package
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold text-dragon-maroon text-center mb-10">Our Amazing Partners</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {
+          sponsors.map((sponsor) => (
+            <div class="rounded-xl bg-white border border-gray-200 p-6 text-center">
+              <span class="text-xs uppercase text-dragon-maroon font-bold">{sponsor.tier}</span>
+              <h3 class="font-display font-bold mt-2">{sponsor.name}</h3>
+              {
+                sponsor.website && (
+                  <a href={sponsor.website} target="_blank" rel="noopener noreferrer" class="text-sm text-dragon-maroon mt-2 inline-block hover:underline">
+                    Visit Website
+                  </a>
+                )
+              }
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

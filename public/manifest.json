@@ -1,0 +1,93 @@
+{
+  "name": "Round Rock Dragons Basketball - Parent Portal",
+  "short_name": "RR Dragons",
+  "description": "Parent portal for Round Rock Dragons Basketball - manage orders, forms, calendar, and notifications",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#8B0000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png?v=2",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-512.png?v=2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/pwa-screenshot-mobile.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile view of parent portal home"
+    },
+    {
+      "src": "/debug-screenshot.png",
+      "sizes": "1920x1250",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop view of parent portal"
+    }
+  ],
+  "categories": ["education", "sports", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Parent Hub",
+      "short_name": "Hub",
+      "description": "Shop spirit wear and programs",
+      "url": "/parent-hub",
+      "icons": [
+        {
+          "src": "/pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View orders and forms",
+      "url": "/parent-dashboard",
+      "icons": [
+        {
+          "src": "/pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Schedule",
+      "short_name": "Schedule",
+      "description": "View game schedule",
+      "url": "/schedule",
+      "icons": [
+        {
+          "src": "/pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

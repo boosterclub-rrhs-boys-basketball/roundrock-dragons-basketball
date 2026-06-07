@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { newsArticles, getArticle, formatNewsDate } from "../../data/news";
+
+export function getStaticPaths() {
+  return newsArticles.map((article) => ({
+    params: { id: article.id },
+  }));
+}
+
+const { id } = Astro.params;
+const article = getArticle(id!);
+
+if (!article) {
+  return Astro.redirect("/news");
+}
+---
+
+<BaseLayout title={article.title} description={article.excerpt}>
+  <article class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a href="/news" class="text-dragon-maroon font-semibold hover:underline">← Back to News</a>
+      <span class="block mt-6 text-xs uppercase tracking-wide text-dragon-maroon font-bold">{article.category}</span>
+      <time class="block text-sm text-gray-500 mt-2">{formatNewsDate(article.date)}</time>
+      <h1 class="font-display text-4xl font-bold text-gray-900 mt-4">{article.title}</h1>
+      <div class="mt-8 prose prose-lg max-w-none text-gray-700 leading-relaxed">
+        <p>{article.body}</p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

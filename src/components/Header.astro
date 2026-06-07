@@ -1,0 +1,124 @@
+---
+import { navLinks, getInvolvedLinks, moreLinks, site } from "../data/site";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 bg-dragon-dark/95 backdrop-blur border-b border-white/10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a href="/" class="flex items-center gap-3 shrink-0">
+        <img src="/dragons-logo.png" alt="Dragons logo" class="h-10 w-10 object-contain" />
+        <span class="font-display text-white text-lg sm:text-xl font-bold tracking-wide uppercase">
+          {site.shortName}
+        </span>
+      </a>
+
+      <nav class="hidden xl:flex items-center gap-1" aria-label="Main navigation">
+        {
+          navLinks.map((link) => (
+            <a
+              href={link.href}
+              class:list={[
+                "px-3 py-2 rounded-md text-sm font-semibold transition-colors",
+                currentPath === link.href
+                  ? "bg-dragon-maroon text-white"
+                  : "text-white/90 hover:text-white hover:bg-white/10",
+              ]}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+
+        <details class="relative group">
+          <summary class="list-none px-3 py-2 rounded-md text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 cursor-pointer">
+            Get Involved
+          </summary>
+          <div class="absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-xl border border-gray-100 py-2">
+            {
+              getInvolvedLinks.map((link) => (
+                <a href={link.href} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  {link.label}
+                </a>
+              ))
+            }
+          </div>
+        </details>
+
+        <details class="relative group">
+          <summary class="list-none px-3 py-2 rounded-md text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 cursor-pointer">
+            More
+          </summary>
+          <div class="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-xl border border-gray-100 py-2">
+            {
+              moreLinks.map((link) => (
+                <a href={link.href} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  {link.label}
+                </a>
+              ))
+            }
+          </div>
+        </details>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a
+          href="/parents"
+          class="hidden sm:inline-flex px-4 py-2 rounded-md bg-white text-dragon-maroon text-sm font-bold hover:bg-gray-100 transition-colors"
+        >
+          Sign In
+        </a>
+        <button
+          type="button"
+          id="mobile-menu-button"
+          class="xl:hidden p-2 rounded-md text-white hover:bg-white/10"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden xl:hidden border-t border-white/10 bg-dragon-dark">
+    <nav class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
+      {
+        [...navLinks, ...getInvolvedLinks, ...moreLinks].map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              "px-3 py-2 rounded-md text-sm font-semibold",
+              currentPath === link.href ? "bg-dragon-maroon text-white" : "text-white/90 hover:bg-white/10",
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a href="/parents" class="mt-2 px-3 py-2 rounded-md bg-white text-dragon-maroon text-sm font-bold text-center">
+        Sign In
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const button = document.getElementById("mobile-menu-button");
+  const menu = document.getElementById("mobile-menu");
+
+  button?.addEventListener("click", () => {
+    const isOpen = !menu?.classList.contains("hidden");
+    menu?.classList.toggle("hidden", isOpen);
+    button.setAttribute("aria-expanded", String(!isOpen));
+  });
+</script>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

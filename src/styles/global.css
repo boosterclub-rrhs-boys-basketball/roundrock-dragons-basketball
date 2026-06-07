@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dragon-maroon: #8b0000;
+  --color-dragon-maroon-dark: #6b0000;
+  --color-dragon-maroon-light: #a52a2a;
+  --color-dragon-gold: #c9a227;
+  --color-dragon-dark: #1a1a1a;
+  --font-display: "Oswald", sans-serif;
+  --font-body: "Montserrat", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #1a1a1a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}

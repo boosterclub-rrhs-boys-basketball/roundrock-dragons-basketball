@@ -1,43 +1,127 @@
-# Astro Starter Kit: Minimal
+# Round Rock Dragons Basketball Website
 
-```sh
-npm create astro@latest -- --template minimal
+A cost-effective rebuild of [roundrockbasketball.org](https://roundrockbasketball.org/) designed to run on **Cloudflare Pages** instead of Lovable + Supabase.
+
+## Why migrate?
+
+| Service | Typical cost | Cloudflare replacement |
+|---------|-------------|------------------------|
+| Lovable hosting | ~$20–50+/mo | **Cloudflare Pages: $0** (free tier) |
+| Supabase | ~$25+/mo (Pro) | **Cloudflare D1: $0** (free tier, 5GB) |
+| Square payments | Per transaction | **Keep Square** (no change) |
+| Domain DNS | varies | **Cloudflare DNS: $0** |
+
+**Estimated savings: $45–75+/month** while keeping Square for payments.
+
+## What's included
+
+### Phase 1 (built now) — Public website
+- Home, Schedule, Teams, Coaches, Members, News, Sponsors
+- Get Involved pages (Join, Volunteers, Fundraising, Donations)
+- Store page with Square Catalog API integration
+- Mobile-responsive design matching current branding (maroon/gold)
+- Content editable via `src/data/*.ts` files (no database needed for static content)
+
+### Phase 2 (planned) — Replace Supabase features
+- Parent/member login (Cloudflare D1 + secure sessions)
+- Ticket validation & scanner
+- Order history
+- Member voting, minutes, news portal
+- Admin content editor
+
+## Quick start
+
+```bash
+cd website
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Open http://localhost:4321
 
-## 🚀 Project Structure
+## Deploy to Cloudflare Pages
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Push this `website/` folder to GitHub
+2. In [Cloudflare Dashboard](https://dash.cloudflare.com) → Workers & Pages → Create → Connect to Git
+3. Build settings:
+   - **Framework preset:** Astro
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+4. Add environment variables (Settings → Environment variables):
+   - `SQUARE_ACCESS_TOKEN` — from [Square Developer Dashboard](https://developer.squareup.com)
+   - `SQUARE_LOCATION_ID` — your Square location ID
+5. (Optional) Create D1 database for Phase 2:
+   ```bash
+   npx wrangler d1 create rrhs-db
+   npx wrangler d1 execute rrhs-db --file=./schema.sql
+   ```
+   Update `database_id` in `wrangler.jsonc`
 
-```text
-/
-├── public/
+## Custom domain
+
+Point `roundrockbasketball.org` DNS to Cloudflare Pages:
+1. Add the domain in Cloudflare Pages project settings
+2. Update nameservers at your registrar (or add CNAME record)
+3. SSL is automatic
+
+## Migrating data from Supabase
+
+You'll need access to your Lovable/Supabase project:
+
+1. **Export from Supabase Dashboard** → Table Editor → Export CSV for:
+   - games, news, sponsors, members, profiles, tickets, orders
+2. **Or use Lovable** → Project Settings → export/download source if available
+3. Import into:
+   - Static content → edit files in `src/data/`
+   - Dynamic content → D1 database (Phase 2)
+
+### Full schedule import
+
+The current site has 80+ games. Export from Supabase and convert to the format in `src/data/games.ts`, or wait for the D1 import script in Phase 2.
+
+## Square store setup
+
+Products are managed in your existing **Square Dashboard** — no Supabase needed. The store page calls `/api/store/products` which reads from Square Catalog API server-side (access token never exposed to browsers).
+
+For full checkout, add Square Web Payments SDK in Phase 2 or link to your Square Online store URL.
+
+## Project structure
+
+```
+website/
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/     # Header, Footer, PageHero
+│   ├── data/           # Site content (news, games, teams, etc.)
+│   ├── layouts/        # BaseLayout
+│   ├── pages/          # All routes
+│   └── styles/         # Tailwind + brand colors
+├── public/             # Static assets (logo, manifest, PDFs)
+├── schema.sql          # D1 database schema (Phase 2)
+└── wrangler.jsonc      # Cloudflare configuration
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Editing content
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Booster club volunteers can update content by editing TypeScript data files:
 
-Any static assets, like images, can be placed in the `public/` directory.
+- **News:** `src/data/news.ts`
+- **Schedule:** `src/data/games.ts`
+- **Teams:** `src/data/teams.ts`
+- **Coaches:** `src/data/coaches.ts`
+- **Sponsors:** `src/data/sponsors.ts`
+- **Members:** `src/data/members.ts`
 
-## 🧞 Commands
+A simple admin UI can be added in Phase 2.
 
-All commands are run from the root of the project, from a terminal:
+## What you'll need from Lovable
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+To complete the migration, gather:
 
-## 👀 Want to learn more?
+1. Supabase project credentials (for one-time data export)
+2. Square API credentials (Access Token + Location ID)
+3. Any uploaded images/assets not on the live site
+4. List of parent/member accounts to migrate (Phase 2)
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## License
+
+Maintained by the RRHS Men's Basketball Booster Club.

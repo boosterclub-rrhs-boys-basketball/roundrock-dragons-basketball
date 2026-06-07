@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+import { games, getRecentResults, getUpcomingGames, formatGameDate } from "../data/games";
+
+const upcoming = getUpcomingGames(50);
+const recent = getRecentResults(50);
+---
+
+<BaseLayout title="Game Schedule" description="Follow the Round Rock Dragons basketball schedule throughout the season.">
+  <PageHero title="Game Schedule" subtitle="Follow the Dragons throughout the season" />
+
+  <section class="py-12 bg-gray-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold text-dragon-maroon mb-6">Season Statistics</h2>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
+          <div class="font-display text-3xl font-bold">{site.seasonStats.overall}</div>
+          <div class="text-sm text-gray-600 mt-1">Overall Record</div>
+        </div>
+        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
+          <div class="font-display text-3xl font-bold">{site.seasonStats.home}</div>
+          <div class="text-sm text-gray-600 mt-1">Home Record</div>
+        </div>
+        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
+          <div class="font-display text-3xl font-bold">{site.seasonStats.district}</div>
+          <div class="text-sm text-gray-600 mt-1">District Record</div>
+        </div>
+        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
+          <div class="font-display text-3xl font-bold">{site.seasonStats.avgPoints}</div>
+          <div class="text-sm text-gray-600 mt-1">Avg Points Per Game</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold text-dragon-maroon mb-6">Upcoming Games</h2>
+      {
+        upcoming.length === 0 ? (
+          <p class="text-gray-500">No upcoming games scheduled at this time.</p>
+        ) : (
+          <div class="space-y-3">
+            {upcoming.map((game) => (
+              <div class="rounded-lg border border-gray-200 p-4 flex flex-wrap justify-between gap-2">
+                <div>
+                  <p class="font-bold">vs {game.opponent}</p>
+                  <p class="text-sm text-gray-600">{game.location} · {game.team}</p>
+                </div>
+                <p class="text-sm text-gray-500">{formatGameDate(game)}</p>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold text-dragon-maroon mb-6">Recent Results</h2>
+      <div class="space-y-3">
+        {
+          recent.map((game) => (
+            <div class="rounded-lg bg-white border border-gray-200 p-4 flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <span
+                  class:list={[
+                    "inline-flex w-8 h-8 items-center justify-center rounded-full text-sm font-bold text-white",
+                    game.result === "W" ? "bg-green-600" : "bg-red-600",
+                  ]}
+                >
+                  {game.result}
+                </span>
+                <div>
+                  <p class="font-bold">{game.opponent}</p>
+                  <p class="text-sm text-gray-600">
+                    {formatGameDate(game)} · {game.location}
+                    {game.type === "Tournament" && " · Tournament"}
+                  </p>
+                </div>
+              </div>
+              {game.score && <span class="font-display text-xl font-bold">{game.score}</span>}
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-6 text-sm text-gray-500">
+        Showing {recent.length} recent games. Import the full schedule from your Supabase export into <code>src/data/games.ts</code>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

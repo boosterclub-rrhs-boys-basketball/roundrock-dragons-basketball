@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Help" description="Get help with the Round Rock Dragons website and booster club.">
+  <PageHero title="Help & FAQ" subtitle="Answers to common questions" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      {
+        [
+          {
+            q: "How do I join the booster club?",
+            a: "Visit our Join page or email us to get membership information.",
+          },
+          {
+            q: "Where can I find the game schedule?",
+            a: "The full schedule is on our Schedule page, updated throughout the season.",
+          },
+          {
+            q: "How do I purchase spirit wear or tickets?",
+            a: "Visit the Store page. Products are powered by Square for secure checkout.",
+          },
+          {
+            q: "Who maintains this website?",
+            a: site.disclaimer,
+          },
+        ].map((item) => (
+          <div class="rounded-xl border border-gray-200 p-6">
+            <h2 class="font-display text-lg font-bold text-dragon-maroon">{item.q}</h2>
+            <p class="mt-2 text-gray-600">{item.a}</p>
+          </div>
+        ))
+      }
+
+      <p class="text-center text-gray-600">
+        Still need help? Email <a href={`mailto:${site.email}`} class="text-dragon-maroon font-semibold">{site.email}</a>
+        or call <a href={`tel:${site.phone.replace(/\D/g, "")}`} class="text-dragon-maroon font-semibold">{site.phone}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

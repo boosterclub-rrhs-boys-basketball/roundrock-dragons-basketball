@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Fundraising" description="Fundraising opportunities for Round Rock Dragons basketball.">
+  <PageHero title="Fundraising" subtitle="Help us raise funds for our basketball program" />
+
+  <section class="py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-gray-600 text-lg leading-relaxed">
+        From spirit wear sales to community events, our fundraising efforts support uniforms, travel,
+        equipment, and team experiences. Check our news page for current campaigns.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/news" class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">View Current Campaigns</a>
+        <a href="/store" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">Visit Store</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
