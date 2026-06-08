@@ -6,6 +6,9 @@
   --color-dragon-maroon-light: hsl(345 70% 42%);
   --color-dragon-silver: hsl(0 0% 80%);
   --color-dragon-silver-fg: hsl(0 0% 15%);
+  --color-card-foreground: hsl(355 60% 18%);
+  --color-muted-foreground: hsl(355 60% 25%);
+  --color-accent: hsl(345 70% 42%);
   --color-dragon-gold: #c9a227;
   --color-dragon-dark: #1a1a1a;
   --color-nav-gray: hsl(0 0% 35%);
@@ -40,4 +43,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .hover\:shadow-dramatic:hover {
   box-shadow: 0 20px 65px -20px hsl(345 75% 30% / 0.55);
+}
+
+.bg-gradient-primary {
+  background-image: linear-gradient(135deg, hsl(345 75% 32%), hsl(345 70% 42%));
+}
+
+.bg-accent {
+  background-color: hsl(345 70% 42%);
 }
