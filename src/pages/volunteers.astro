@@ -1,24 +1,297 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { volunteerOpportunities, volunteersPage } from "../data/volunteersPage";
 import { site } from "../data/site";
+
+const { hero, opportunities, form, contactDialog } = volunteersPage;
+
+const icons = {
+  send: `<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /><path d="m21.854 2.147-10.94 10.939" />`,
+};
 ---
 
-<BaseLayout title="Volunteers" description="Volunteer with the Round Rock Dragons booster club.">
-  <PageHero title="Volunteers" subtitle="Help make game day and events run smoothly" />
+<BaseLayout title="Volunteer Opportunities" description="Volunteer with Round Rock Dragons basketball.">
+  <div class="min-h-screen bg-background font-system">
+    <PageHeader title={hero.title} subtitle={hero.subtitle} />
 
-  <section class="py-16">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <p class="text-gray-600 text-lg">
-        We rely on volunteers for concessions, game operations, fundraising events, and tournament support.
-        Every hour helps our program thrive.
-      </p>
-      <a
-        href={`mailto:${site.email}?subject=Volunteer Interest`}
-        class="inline-flex mt-8 px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold"
-      >
-        Sign Up to Volunteer
-      </a>
+    <div class="mx-auto max-w-6xl px-4 py-12">
+      <div class="grid gap-8">
+        {
+          volunteerOpportunities.length > 0 ? (
+            <section>
+              <h2 class="mb-8 text-center text-3xl font-bold text-foreground">{opportunities.title}</h2>
+              <div class="grid gap-6 md:grid-cols-2">
+                {
+                  volunteerOpportunities.map((opportunity) => (
+                    <article class="rounded-lg border border-primary/20 bg-card text-card-foreground shadow-sm transition-colors hover:border-primary/40">
+                      <header class="flex flex-col space-y-1.5 p-6">
+                        <h3 class="text-2xl font-semibold leading-none tracking-tight text-primary">{opportunity.title}</h3>
+                        <p
+                          class:list={[
+                            "text-base text-muted-foreground",
+                            opportunity.description.includes("\n") && "whitespace-pre-line",
+                          ]}
+                        >
+                          {opportunity.description.trim()}
+                        </p>
+                      </header>
+                      <div class="space-y-4 p-6 pt-0">
+                        <div>
+                          <p class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                            {opportunities.timeCommitment}
+                          </p>
+                          <p class="text-foreground">{opportunity.commitment}</p>
+                        </div>
+                        <div>
+                          <p class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                            {opportunities.whenNeeded}
+                          </p>
+                          <p class="text-foreground">{opportunity.whenNeeded}</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                          {
+                            opportunity.signupUrl && (
+                              <a
+                                href={opportunity.signupUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                              >
+                                {opportunities.signUp}
+                              </a>
+                            )
+                          }
+                          <button
+                            type="button"
+                            class="contact-trigger inline-flex h-10 items-center justify-center rounded-md border border-primary bg-background px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                            data-opportunity-id={opportunity.id}
+                            data-opportunity-title={opportunity.title}
+                          >
+                            {opportunities.contactCoordinator}
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  ))
+                }
+              </div>
+            </section>
+          ) : (
+            <div class="py-12 text-center">
+              <h2 class="mb-4 text-2xl font-bold text-foreground">{opportunities.emptyTitle}</h2>
+              <p class="text-muted-foreground">{opportunities.emptyMessage}</p>
+            </div>
+          )
+        }
+
+        <section>
+          <article class="mx-auto max-w-2xl rounded-lg border bg-card text-card-foreground shadow-sm">
+            <header class="flex flex-col space-y-1.5 p-6 text-center">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{form.title}</h3>
+              <p class="text-sm text-muted-foreground">{form.subtitle}</p>
+            </header>
+            <div class="p-6 pt-0">
+              <div id="volunteer-success" class="hidden rounded-md border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-800" role="status">
+                <p class="font-semibold">{form.successTitle}</p>
+                <p class="mt-1">{form.successDescription}</p>
+              </div>
+
+              <form id="volunteer-form" class="space-y-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label for="vol-name" class="mb-1 block text-sm font-medium text-foreground">{form.nameLabel}</label>
+                    <input
+                      type="text"
+                      id="vol-name"
+                      name="name"
+                      required
+                      class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    />
+                  </div>
+                  <div>
+                    <label for="vol-email" class="mb-1 block text-sm font-medium text-foreground">{form.emailLabel}</label>
+                    <input
+                      type="email"
+                      id="vol-email"
+                      name="email"
+                      required
+                      class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="vol-phone" class="mb-1 block text-sm font-medium text-foreground">{form.phoneLabel}</label>
+                  <input
+                    type="tel"
+                    id="vol-phone"
+                    name="phone"
+                    class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  />
+                </div>
+
+                {
+                  volunteerOpportunities.length > 0 && (
+                    <fieldset>
+                      <legend class="mb-2 block text-sm font-medium text-foreground">{form.interestsLabel}</legend>
+                      <div class="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                        {
+                          volunteerOpportunities.map((opportunity) => (
+                            <label class="flex items-center gap-2 text-sm text-foreground">
+                              <input type="checkbox" name="interests" value={opportunity.title} class="h-4 w-4 rounded border-border text-primary focus:ring-primary/40" />
+                              <span>{opportunity.title}</span>
+                            </label>
+                          ))
+                        }
+                      </div>
+                    </fieldset>
+                  )
+                }
+
+                <div>
+                  <label for="vol-availability" class="mb-1 block text-sm font-medium text-foreground">{form.availabilityLabel}</label>
+                  <input
+                    type="text"
+                    id="vol-availability"
+                    name="availability"
+                    placeholder={form.availabilityPlaceholder}
+                    class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  />
+                </div>
+
+                <div>
+                  <label for="vol-message" class="mb-1 block text-sm font-medium text-foreground">{form.messageLabel}</label>
+                  <textarea
+                    id="vol-message"
+                    name="message"
+                    rows={3}
+                    placeholder={form.messagePlaceholder}
+                    class="flex w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  {form.submitLabel}
+                </button>
+              </form>
+            </div>
+          </article>
+        </section>
+      </div>
     </div>
-  </section>
+  </div>
+
+  <dialog id="contact-dialog" class="w-[calc(100%-2rem)] max-w-lg rounded-lg border border-border bg-card p-0 text-card-foreground shadow-lg backdrop:bg-black/50">
+    <form id="contact-form" class="p-6">
+      <header class="mb-4">
+        <h2 id="contact-dialog-title" class="text-lg font-bold text-foreground">{contactDialog.title}</h2>
+        <p id="contact-dialog-description" class="mt-1 text-sm text-muted-foreground"></p>
+      </header>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="contact-name" class="mb-1 block text-sm font-medium text-foreground">{contactDialog.nameLabel}</label>
+            <input type="text" id="contact-name" name="name" required placeholder="Enter your name" class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" />
+          </div>
+          <div>
+            <label for="contact-email" class="mb-1 block text-sm font-medium text-foreground">{contactDialog.emailLabel}</label>
+            <input type="email" id="contact-email" name="email" required placeholder="Enter your email" class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" />
+          </div>
+        </div>
+        <div>
+          <label for="contact-subject" class="mb-1 block text-sm font-medium text-foreground">{contactDialog.subjectLabel}</label>
+          <input type="text" id="contact-subject" name="subject" required placeholder="What is this about?" class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" />
+        </div>
+        <div>
+          <label for="contact-message" class="mb-1 block text-sm font-medium text-foreground">{contactDialog.messageLabel}</label>
+          <textarea id="contact-message" name="message" required rows={4} placeholder="Write your message here..." class="flex w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"></textarea>
+        </div>
+      </div>
+
+      <footer class="mt-6 flex justify-end gap-2">
+        <button type="button" id="contact-cancel" class="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted">
+          {contactDialog.cancel}
+        </button>
+        <button type="submit" class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.send} />
+          {contactDialog.send}
+        </button>
+      </footer>
+    </form>
+  </dialog>
 </BaseLayout>
+
+<script define:vars={{ siteEmail: site.email, contactDialogTitle: contactDialog.title }}>
+  const contactDialogEl = document.getElementById("contact-dialog");
+  const contactForm = document.getElementById("contact-form");
+  const contactTitle = document.getElementById("contact-dialog-title");
+  const contactDescription = document.getElementById("contact-dialog-description");
+  const contactCancel = document.getElementById("contact-cancel");
+  const volunteerForm = document.getElementById("volunteer-form");
+  const volunteerSuccess = document.getElementById("volunteer-success");
+
+  document.querySelectorAll(".contact-trigger").forEach((button) => {
+    button.addEventListener("click", () => {
+      const opportunityTitle = button.dataset.opportunityTitle ?? "Volunteer Opportunity";
+
+      if (contactTitle) contactTitle.textContent = contactDialogTitle;
+      if (contactDescription) {
+        contactDescription.textContent = `Send a message about "${opportunityTitle}" — your message will be forwarded to the volunteer coordinator.`;
+      }
+      const subjectInput = document.getElementById("contact-subject");
+      if (subjectInput) subjectInput.value = opportunityTitle;
+
+      contactDialogEl?.showModal();
+    });
+  });
+
+  contactCancel?.addEventListener("click", () => contactDialogEl?.close());
+  contactDialogEl?.addEventListener("click", (event) => {
+    if (event.target === contactDialogEl) contactDialogEl.close();
+  });
+
+  contactForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(contactForm);
+    const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const subject = String(formData.get("subject") ?? "");
+    const message = String(formData.get("message") ?? "");
+    const body = encodeURIComponent(`From: ${name} (${email})\n\n${message}`);
+    window.location.href = `mailto:${siteEmail}?subject=${encodeURIComponent(subject)}&body=${body}`;
+    contactDialogEl?.close();
+  });
+
+  volunteerForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(volunteerForm);
+    const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const phone = String(formData.get("phone") ?? "");
+    const availability = String(formData.get("availability") ?? "");
+    const message = String(formData.get("message") ?? "");
+    const interests = formData.getAll("interests").join(", ");
+
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      phone && `Phone: ${phone}`,
+      interests && `Interests: ${interests}`,
+      availability && `Availability: ${availability}`,
+      message && `\nComments:\n${message}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    window.location.href = `mailto:${siteEmail}?subject=${encodeURIComponent("Volunteer Application")}&body=${encodeURIComponent(body)}`;
+
+    volunteerForm.reset();
+    volunteerSuccess?.classList.remove("hidden");
+    window.setTimeout(() => volunteerSuccess?.classList.add("hidden"), 5000);
+  });
+</script>

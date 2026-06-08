@@ -1,68 +1,200 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
+import SectionContainer from "../components/SectionContainer.astro";
 import { teams } from "../data/teams";
+
+const dotPattern = `url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')`;
 ---
 
 <BaseLayout title="Our Teams" description="Meet the Round Rock Dragons basketball teams.">
-  <PageHero
-    title="Our Teams"
-    subtitle="Meet the Dragons basketball family - where champions are made"
-  />
-
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      {
-        teams.map((team) => (
-          <article class="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-            <div class="bg-dragon-maroon text-white px-6 py-4 flex flex-wrap justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold">{team.name}</h2>
-                <p class="text-white/80">{team.level}</p>
-              </div>
-              <div class="text-right">
-                <p class="text-sm text-white/80">Record</p>
-                <p class="font-display text-xl font-bold">{team.record}</p>
-              </div>
-            </div>
-            <div class="p-6 grid md:grid-cols-2 gap-6">
-              <div>
-                <p class="text-gray-600">{team.description}</p>
-                <p class="mt-4">
-                  <span class="font-semibold">Coach:</span> {team.coach}
-                </p>
-                <div class="mt-6 flex gap-3">
-                  <a href="/schedule" class="px-4 py-2 rounded-md bg-dragon-maroon text-white text-sm font-bold">
-                    Schedule
-                  </a>
-                </div>
-              </div>
-              <div>
-                <h3 class="font-display text-lg font-bold text-dragon-maroon mb-3">Key Achievements</h3>
-                <ul class="space-y-2">
-                  {team.achievements.map((item) => (
-                    <li class="flex items-start gap-2 text-gray-600">
-                      <span class="text-dragon-maroon mt-1">•</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="py-12 bg-gray-50 text-center">
-    <div class="max-w-3xl mx-auto px-4">
-      <h2 class="font-display text-2xl font-bold text-dragon-maroon">Want to Join the Dragons?</h2>
-      <p class="mt-3 text-gray-600">Learn about tryouts, training camps, and how to become part of our basketball family.</p>
-      <div class="mt-6 flex flex-wrap justify-center gap-4">
-        <a href="/help" class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">Tryout Information</a>
-        <a href="/coaches" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">Contact Coaches</a>
+  <div class="min-h-screen bg-background font-sans">
+    <section class="relative overflow-hidden py-8 bg-gradient-to-br from-primary via-primary/90 to-secondary">
+      <div class="absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true">
+        <div
+          class="absolute top-0 left-0 w-full h-full"
+          style={`background-image: ${dotPattern}; background-repeat: repeat;`}
+        />
       </div>
-    </div>
-  </section>
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute left-[-5%] top-1/2 -translate-y-1/2 opacity-5 w-96 h-96">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain" />
+        </div>
+        <div class="absolute right-[-5%] top-1/2 -translate-y-1/2 opacity-5 w-96 h-96">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain" />
+        </div>
+        <div class="absolute left-[15%] top-[15%] opacity-15 w-24 h-24 animate-pulse">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain drop-shadow-xl" />
+        </div>
+        <div class="absolute right-[15%] bottom-[15%] opacity-15 w-24 h-24 animate-pulse" style="animation-delay: 1s">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain drop-shadow-xl" />
+        </div>
+      </div>
+      <div class="absolute -top-8 -right-8 w-32 h-32 bg-secondary/20 rounded-full blur-xl pointer-events-none" aria-hidden="true" />
+      <div class="absolute -bottom-8 -left-8 w-24 h-24 bg-primary-foreground/10 rounded-full blur-xl pointer-events-none" aria-hidden="true" />
+
+      <SectionContainer class="relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+          <div class="hidden lg:flex justify-center">
+            <img
+              src="/coaching-logo.png"
+              alt=""
+              class="h-20 w-auto object-contain drop-shadow-2xl animate-pulse"
+              aria-hidden="true"
+            />
+          </div>
+          <div class="text-center">
+            <h1 class="font-display text-3xl md:text-4xl font-black text-primary-foreground mb-3 text-shadow uppercase tracking-wider">
+              Our Teams
+            </h1>
+            <p class="text-lg md:text-xl text-primary-foreground/90 text-shadow font-medium">
+              Meet the Dragons basketball family - where champions are made
+            </p>
+          </div>
+          <div class="hidden lg:flex justify-center">
+            <img
+              src="/coaching-logo.png"
+              alt=""
+              class="h-20 w-auto object-contain drop-shadow-2xl animate-pulse"
+              style="animation-delay: 1s"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+        <div class="lg:hidden flex justify-center mt-4">
+          <img src="/coaching-logo.png" alt="" class="h-12 w-auto object-contain drop-shadow-xl" aria-hidden="true" />
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-16">
+      <SectionContainer>
+        <div class="grid grid-cols-1 gap-12">
+          {
+            teams.map((team) => (
+              <article class="overflow-hidden rounded-lg border bg-card text-card-foreground shadow-dramatic transition-all duration-300 hover:shadow-glow">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                  <div class="h-64 lg:h-auto min-h-[16rem] bg-muted">
+                    <img
+                      src={team.image}
+                      alt={team.name}
+                      class="w-full h-full object-cover"
+                      loading="lazy"
+                      onerror="this.src='/coaching-logo.png'; this.classList.add('object-contain', 'p-8', 'bg-primary/10');"
+                    />
+                  </div>
+                  <div class="p-8">
+                    <div class="mb-6">
+                      <div class="flex items-center justify-between gap-3 mb-2 flex-wrap">
+                        <h2 class="text-3xl font-bold">{team.name}</h2>
+                        <span class="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold shrink-0">
+                          {team.level}
+                        </span>
+                      </div>
+                      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                        <div class="flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                          </svg>
+                          <span>Record: {team.record}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                          </svg>
+                          <span>Coach: {team.coach}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p class="text-muted-foreground mb-6">{team.description}</p>
+
+                    {
+                      team.achievements.length > 0 && (
+                        <div class="mb-6">
+                          <h3 class="font-semibold mb-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                            </svg>
+                            Key Achievements
+                          </h3>
+                          <ul class="space-y-2">
+                            {team.achievements.map((item) => (
+                              <li class="flex items-center text-sm text-muted-foreground">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-primary mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <circle cx="12" cy="12" r="6" />
+                                  <circle cx="12" cy="12" r="2" />
+                                </svg>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    }
+
+                    <div class="flex flex-wrap gap-3">
+                      <a
+                        href="/coaches"
+                        class="inline-flex items-center justify-center h-10 px-4 rounded-md bg-gradient-primary text-white text-sm font-semibold transition-all duration-300 hover:shadow-dramatic hover:scale-105"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                          <circle cx="9" cy="7" r="4" />
+                          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        View Roster
+                      </a>
+                      <a
+                        href={`/schedule?team=${encodeURIComponent(team.scheduleFilter)}`}
+                        class="inline-flex items-center justify-center h-10 px-4 rounded-md border-2 border-primary bg-card text-primary text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                          <path d="M8 2v4M16 2v4M3 10h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                        </svg>
+                        Schedule
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-16 bg-accent font-sans">
+      <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold mb-4 text-foreground">Want to Join the Dragons?</h2>
+        <p class="text-xl text-muted-foreground mb-8">
+          Learn about tryouts, training camps, and how to become part of our basketball family.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/help"
+            class="inline-flex items-center justify-center h-12 px-8 rounded-md bg-gradient-primary text-white text-sm font-semibold transition-all duration-300 hover:shadow-dramatic hover:scale-105"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="6" />
+              <circle cx="12" cy="12" r="2" />
+            </svg>
+            Tryout Information
+          </a>
+          <a
+            href="/coaches"
+            class="inline-flex items-center justify-center h-12 px-8 rounded-md border-2 border-primary bg-card text-primary text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Contact Coaches
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </BaseLayout>

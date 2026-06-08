@@ -1,18 +1,303 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import PageHero from "../../components/PageHero.astro";
-import NewsCard from "../../components/NewsCard.astro";
-import { newsArticles } from "../../data/news";
+import SectionContainer from "../../components/SectionContainer.astro";
+import { newsArticles, formatNewsDate } from "../../data/news";
+import { newsPage, mediaItems } from "../../data/newsPage";
+
+const { hero, tabs, media } = newsPage;
+const featured = newsArticles.find((a) => a.featured) ?? newsArticles[0];
+const rest = newsArticles.filter((a) => a.id !== featured?.id);
 ---
 
 <BaseLayout title="News & Media" description="Latest Round Rock Dragons basketball news and highlights.">
-  <PageHero title="News & Media" subtitle="Stay updated with the latest Dragons basketball news and highlights" />
-
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {newsArticles.map((article) => <NewsCard article={article} />)}
+  <div class="min-h-screen bg-background font-sans">
+    <section class="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-secondary py-4">
+      <div class="pointer-events-none absolute inset-0 opacity-10" aria-hidden="true">
+        <div
+          class="absolute inset-0"
+          style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); background-repeat: repeat;"
+        >
+        </div>
       </div>
-    </div>
-  </section>
+      <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-secondary/20 blur-xl" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-primary-foreground/10 blur-xl" aria-hidden="true"></div>
+
+      <SectionContainer class="relative z-10">
+        <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-3">
+          <div class="hidden justify-center lg:flex">
+            <img src="/official-logo.png" alt="" class="h-16 w-auto animate-pulse object-contain drop-shadow-2xl" aria-hidden="true" />
+          </div>
+          <div class="text-center">
+            <h1 class="font-display text-3xl font-black uppercase tracking-wider text-primary-foreground text-shadow md:text-4xl">
+              {hero.title}
+            </h1>
+            <p class="mt-3 text-lg font-medium text-primary-foreground/90 text-shadow md:text-xl">
+              {hero.subtitle}
+            </p>
+          </div>
+          <div class="hidden justify-center lg:flex">
+            <img
+              src="/official-logo.png"
+              alt=""
+              class="h-16 w-auto animate-pulse object-contain drop-shadow-2xl"
+              style="animation-delay: 1s"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+        <div class="mt-4 flex justify-center lg:hidden">
+          <img src="/official-logo.png" alt="" class="h-12 w-auto object-contain drop-shadow-xl" aria-hidden="true" />
+        </div>
+      </SectionContainer>
+    </section>
+
+    <SectionContainer class="py-16">
+      <div class="w-full" id="news-tabs">
+        <div
+          role="tablist"
+          aria-label="News and media sections"
+          class="grid h-10 w-full grid-cols-2 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground"
+        >
+          <button
+            type="button"
+            role="tab"
+            id="tab-news"
+            aria-controls="panel-news"
+            aria-selected="true"
+            data-tab-trigger="news"
+            data-state="active"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+          >
+            {tabs.news}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-media"
+            aria-controls="panel-media"
+            aria-selected="false"
+            data-tab-trigger="media"
+            data-state="inactive"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+          >
+            {tabs.media}
+          </button>
+        </div>
+
+        <div id="latest-news" role="tabpanel" aria-labelledby="tab-news" data-tab-panel="news" class="mt-2 space-y-8">
+          {
+            featured && (
+              <article class="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
+                <div class="md:flex">
+                  {
+                    featured.image && (
+                      <div class="md:w-1/2">
+                        <img
+                          src={featured.image}
+                          alt=""
+                          class="h-64 w-full object-cover md:h-full"
+                          loading="eager"
+                        />
+                      </div>
+                    )
+                  }
+                  <div class="md:w-1/2 p-6">
+                    <div class="mb-4 flex items-center gap-2">
+                      <span class="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-semibold text-secondary-foreground">
+                        Featured
+                      </span>
+                      <span class="inline-flex items-center rounded-md border border-border px-2 py-1 text-xs font-semibold text-foreground">
+                        {featured.category}
+                      </span>
+                    </div>
+                    <h2 class="mb-4 text-2xl font-bold text-foreground">{featured.title}</h2>
+                    <p class="mb-6 text-muted-foreground">{featured.excerpt}</p>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center text-sm text-muted-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                          <path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" />
+                        </svg>
+                        <time datetime={featured.date}>{formatNewsDate(featured.date)}</time>
+                      </div>
+                      <a
+                        href={`/news/${featured.id}`}
+                        class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                      >
+                        Read More
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            )
+          }
+
+          <div class="grid gap-6 md:grid-cols-2">
+            {
+              rest.map((article) => (
+                <article class="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg">
+                  {
+                    article.image && (
+                      <div class="aspect-video overflow-hidden">
+                        <img
+                          src={article.image}
+                          alt=""
+                          class="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    )
+                  }
+                  <div class="p-6">
+                    <div class="mb-3 flex items-center gap-2">
+                      <span class="inline-flex items-center rounded-md border border-border px-2 py-1 text-xs font-semibold text-foreground">
+                        {article.category}
+                      </span>
+                    </div>
+                    <h3 class="mb-3 text-xl font-bold text-foreground">{article.title}</h3>
+                    <p class="mb-4 text-muted-foreground">{article.excerpt}</p>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center text-sm text-muted-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                          <path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" />
+                        </svg>
+                        <time datetime={article.date}>{formatNewsDate(article.date)}</time>
+                      </div>
+                      <a
+                        href={`/news/${article.id}`}
+                        class="inline-flex h-9 items-center justify-center rounded-md border border-border bg-background px-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                      >
+                        Read More
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+
+          {
+            newsArticles.length === 0 && (
+              <div class="py-8 text-center">
+                <p class="text-muted-foreground">No news articles available.</p>
+              </div>
+            )
+          }
+        </div>
+
+        <div id="panel-media" role="tabpanel" aria-labelledby="tab-media" data-tab-panel="media" hidden class="mt-2 space-y-8">
+          <div class="text-center">
+            <h2 class="mb-4 text-3xl font-bold text-foreground">{media.title}</h2>
+            <p class="mb-8 text-muted-foreground">{media.subtitle}</p>
+          </div>
+
+          {
+            mediaItems.length > 0 ? (
+              <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {
+                  mediaItems.map((item) => (
+                    <article class="overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-lg">
+                      <div class="relative aspect-video bg-muted">
+                        {
+                          item.type === "video" ? (
+                            <>
+                              <img src={item.thumbnailUrl ?? "/placeholder.svg"} alt="" class="h-full w-full object-cover" loading="lazy" />
+                              <div class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/30 transition-colors hover:bg-black/40">
+                                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/90">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-8 w-8 text-black" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                  </svg>
+                                </div>
+                              </div>
+                              <span class="absolute right-2 top-2 inline-flex rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white">Video</span>
+                            </>
+                          ) : (
+                            <>
+                              <img src={item.mediaUrl ?? "/placeholder.svg"} alt="" class="h-full w-full cursor-pointer object-cover transition-opacity hover:opacity-90" loading="lazy" />
+                              <span class="absolute right-2 top-2 inline-flex rounded-md bg-blue-600 px-2 py-1 text-xs font-semibold text-white">Photo</span>
+                            </>
+                          )
+                        }
+                      </div>
+                      <div class="p-4">
+                        <h3 class="mb-2 line-clamp-2 font-bold text-foreground">{item.title}</h3>
+                        {item.description && <p class="mb-2 line-clamp-2 text-sm text-muted-foreground">{item.description}</p>}
+                        <div class="flex items-center justify-between text-sm text-muted-foreground">
+                          <time datetime={item.date}>{formatNewsDate(item.date)}</time>
+                          {typeof item.views === "number" && (
+                            <div class="flex items-center gap-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" />
+                              </svg>
+                              <span>{item.views.toLocaleString()}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </article>
+                  ))
+                }
+              </div>
+            ) : (
+              <div class="py-12 text-center">
+                <div class="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-muted">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </div>
+                <h3 class="mb-2 text-lg font-semibold text-foreground">{media.emptyTitle}</h3>
+                <p class="text-muted-foreground">{media.emptyText}</p>
+              </div>
+            )
+          }
+
+          <div class="mt-12">
+            <h3 class="mb-6 text-center text-2xl font-bold text-foreground">{media.highlightsTitle}</h3>
+            <div class="mx-auto max-w-4xl">
+              <div class="aspect-video overflow-hidden rounded-lg bg-black">
+                <iframe
+                  class="h-full w-full"
+                  src={media.youtubeEmbedUrl}
+                  title="Dragons Basketball Highlights"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"
+                ></iframe>
+              </div>
+              <p class="mt-4 text-center text-muted-foreground">{media.highlightsCaption}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </SectionContainer>
+  </div>
 </BaseLayout>
+
+<script>
+  function initNewsTabs() {
+    const triggers = document.querySelectorAll<HTMLButtonElement>("[data-tab-trigger]");
+    const panels = document.querySelectorAll<HTMLElement>("[data-tab-panel]");
+
+    function activate(tab: string) {
+      triggers.forEach((trigger) => {
+        const active = trigger.dataset.tabTrigger === tab;
+        trigger.dataset.state = active ? "active" : "inactive";
+        trigger.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.tabPanel !== tab;
+      });
+    }
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => activate(trigger.dataset.tabTrigger ?? "news"));
+    });
+
+    if (window.location.hash === "#latest-news") {
+      activate("news");
+      document.getElementById("latest-news")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  initNewsTabs();
+</script>

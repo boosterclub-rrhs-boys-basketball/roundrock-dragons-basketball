@@ -1,124 +1,304 @@
 ---
-import { navLinks, getInvolvedLinks, moreLinks, site } from "../data/site";
+import { navLinks, getInvolvedLinks, moreLinks, signInLink, site } from "../data/site";
+import titleLogo from "../assets/title-logo.png";
 
 const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  return currentPath === href || (href !== "/" && currentPath.startsWith(href));
+}
+
+const navLinkClass = (href: string) =>
+  [
+    "px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+    isActive(href)
+      ? "bg-primary text-primary-foreground shadow-glow"
+      : "text-nav-gray-foreground hover:bg-primary-light hover:text-primary-foreground",
+  ] as const;
+
+const dropdownTriggerClass =
+  "nav-dropdown-trigger inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-nav-gray-foreground hover:bg-primary-light hover:text-primary-foreground transition-all duration-200";
+
+const dropdownPanelClass =
+  "nav-dropdown-menu hidden absolute top-full mt-1 z-[100] min-w-[12rem] overflow-visible rounded-md border border-border bg-background p-1 shadow-lg";
+
+const dropdownItemClass =
+  "relative flex w-full cursor-pointer select-none items-center whitespace-nowrap rounded-sm px-2 py-1.5 text-sm text-foreground outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
+
+const signInButtonClass =
+  "inline-flex h-9 items-center justify-center rounded-md px-3 border-2 border-primary bg-card text-primary text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-primary-foreground";
 ---
 
-<header class="sticky top-0 z-50 bg-nav-gray shadow-nav">
-  <div class="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12">
-    <div class="flex items-center justify-between h-16 lg:h-20">
-      <a href="/" class="flex items-center gap-3 shrink-0">
-        <img src="/dragons-logo.png" alt="Dragons logo" class="h-10 w-10 object-contain" />
-        <span class="font-display text-white text-lg sm:text-xl font-bold tracking-wide uppercase">
-          {site.shortName}
-        </span>
+<nav
+  class="bg-nav-gray shadow-nav sticky top-0 z-50 border-b border-primary/20 max-w-full"
+  aria-label="Site navigation"
+>
+  <div class="max-w-[1800px] mx-auto px-2 sm:px-4 md:px-8 lg:px-12 w-full">
+    <div class="flex justify-between items-center min-h-[64px] py-2">
+      <a
+        href="/"
+        class="flex items-center space-x-1 sm:space-x-3 transition-all duration-300 hover:scale-105 flex-shrink-0"
+      >
+        <img
+          src="/dragons-logo.png"
+          alt="Round Rock Dragons Basketball Logo"
+          class="h-12 sm:h-14 md:h-16 w-auto object-contain drop-shadow-2xl"
+        />
+        <div class="flex items-center min-w-0">
+          <span
+            class="hidden sm:inline font-display font-black text-lg md:text-xl tracking-wider uppercase leading-none bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+          >
+            {site.shortName}
+          </span>
+          <img
+            src={titleLogo.src}
+            width={titleLogo.width}
+            height={titleLogo.height}
+            alt="Texas Basketball Logo"
+            class="h-6 md:h-8 w-auto object-contain drop-shadow-lg shrink-0 sm:ml-1"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
       </a>
 
-      <nav class="hidden xl:flex items-center gap-1" aria-label="Main navigation">
+      <div class="hidden md:flex items-center space-x-1 overflow-visible">
         {
           navLinks.map((link) => (
-            <a
-              href={link.href}
-              class:list={[
-                "px-3 py-2 rounded-md text-sm font-semibold transition-colors",
-                currentPath === link.href
-                  ? "bg-dragon-maroon text-white"
-                  : "text-white/90 hover:text-white hover:bg-white/10",
-              ]}
-            >
+            <a href={link.href} class:list={navLinkClass(link.href)}>
               {link.label}
             </a>
           ))
         }
 
-        <details class="relative group">
-          <summary class="list-none px-3 py-2 rounded-md text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 cursor-pointer">
+        <div class="relative" data-nav-dropdown="get-involved">
+          <button
+            type="button"
+            class={dropdownTriggerClass}
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="get-involved-menu"
+          >
             Get Involved
-          </summary>
-          <div class="absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-xl border border-gray-100 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="ml-1 h-4 w-4 transition-transform duration-200"
+              data-chevron
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div id="get-involved-menu" class:list={[dropdownPanelClass, "left-0"]} role="menu">
             {
               getInvolvedLinks.map((link) => (
-                <a href={link.href} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                <a href={link.href} role="menuitem" class={dropdownItemClass}>
                   {link.label}
                 </a>
               ))
             }
           </div>
-        </details>
+        </div>
 
-        <details class="relative group">
-          <summary class="list-none px-3 py-2 rounded-md text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 cursor-pointer">
+        <div class="relative" data-nav-dropdown="more">
+          <button
+            type="button"
+            class={dropdownTriggerClass}
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="more-menu"
+          >
             More
-          </summary>
-          <div class="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-xl border border-gray-100 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="ml-1 h-4 w-4 transition-transform duration-200"
+              data-chevron
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div id="more-menu" class:list={[dropdownPanelClass, "right-0"]} role="menu">
             {
               moreLinks.map((link) => (
-                <a href={link.href} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                <a href={link.href} role="menuitem" class={dropdownItemClass}>
                   {link.label}
                 </a>
               ))
             }
+            <a href={signInLink.href} role="menuitem" class={dropdownItemClass}>
+              {signInLink.label}
+            </a>
           </div>
-        </details>
-      </nav>
+        </div>
 
-      <div class="flex items-center gap-3">
-        <a
-          href="/parents"
-          class="hidden sm:inline-flex px-4 py-2 rounded-md bg-white text-dragon-maroon text-sm font-bold hover:bg-gray-100 transition-colors"
-        >
-          Sign In
-        </a>
+        <div class="flex items-center ml-4 space-x-2">
+          <a href={signInLink.href} class={signInButtonClass}>
+            {signInLink.label}
+          </a>
+        </div>
+      </div>
+
+      <div class="md:hidden">
         <button
           type="button"
           id="mobile-menu-button"
-          class="xl:hidden p-2 rounded-md text-white hover:bg-white/10"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-md text-nav-gray-foreground hover:bg-primary-light hover:text-primary-foreground transition-colors"
           aria-label="Open menu"
           aria-expanded="false"
+          aria-controls="mobile-menu"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg id="mobile-menu-icon-open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="mobile-menu-icon-close" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
     </div>
-  </div>
 
-  <div id="mobile-menu" class="hidden xl:hidden border-t border-white/10 bg-nav-gray">
-    <nav class="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
-      {
-        [...navLinks, ...getInvolvedLinks, ...moreLinks].map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              "px-3 py-2 rounded-md text-sm font-semibold",
-              currentPath === link.href ? "bg-dragon-maroon text-white" : "text-white/90 hover:bg-white/10",
-            ]}
-          >
-            {link.label}
+    <div
+      id="mobile-menu"
+      class="hidden md:hidden bg-gradient-to-b from-nav-gray to-nav-gray/95 border-t border-primary/20 max-w-full overflow-x-hidden"
+    >
+      <div class="px-2 pt-2 pb-3 space-y-1 max-w-full">
+        {
+          navLinks.map((link) => (
+            <a href={link.href} class:list={[...navLinkClass(link.href), "block sm:text-base"]}>
+              {link.label}
+            </a>
+          ))
+        }
+
+        <div class="pt-2">
+          <div class="text-xs text-nav-gray-foreground/70 px-3 py-1 font-medium uppercase tracking-wider">
+            Get Involved
+          </div>
+          {
+            getInvolvedLinks.map((link) => (
+              <a href={link.href} class:list={[...navLinkClass(link.href), "block sm:text-base"]}>
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="pt-2">
+          <div class="text-xs text-nav-gray-foreground/70 px-3 py-1 font-medium uppercase tracking-wider">
+            More
+          </div>
+          {
+            moreLinks.map((link) => (
+              <a href={link.href} class:list={[...navLinkClass(link.href), "block sm:text-base"]}>
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="pt-2 space-y-2">
+          <a href={signInLink.href} class:list={[signInButtonClass, "w-full"]}>
+            {signInLink.label}
           </a>
-        ))
-      }
-      <a href="/parents" class="mt-2 px-3 py-2 rounded-md bg-white text-dragon-maroon text-sm font-bold text-center">
-        Sign In
-      </a>
-    </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</header>
+</nav>
 
 <script>
-  const button = document.getElementById("mobile-menu-button");
-  const menu = document.getElementById("mobile-menu");
+  function closeNavDropdowns() {
+    document.querySelectorAll("[data-nav-dropdown]").forEach((dropdown) => {
+      const trigger = dropdown.querySelector(".nav-dropdown-trigger");
+      const menu = dropdown.querySelector(".nav-dropdown-menu");
+      const chevron = dropdown.querySelector("[data-chevron]");
 
-  button?.addEventListener("click", () => {
-    const isOpen = !menu?.classList.contains("hidden");
-    menu?.classList.toggle("hidden", isOpen);
-    button.setAttribute("aria-expanded", String(!isOpen));
-  });
-</script>
-
-<style>
-  summary::-webkit-details-marker {
-    display: none;
+      menu?.classList.add("hidden");
+      trigger?.setAttribute("aria-expanded", "false");
+      chevron?.classList.remove("rotate-180");
+    });
   }
-</style>
+
+  function setMobileMenuOpen(open: boolean) {
+    const menu = document.getElementById("mobile-menu");
+    const button = document.getElementById("mobile-menu-button");
+    const iconOpen = document.getElementById("mobile-menu-icon-open");
+    const iconClose = document.getElementById("mobile-menu-icon-close");
+
+    menu?.classList.toggle("hidden", !open);
+    button?.setAttribute("aria-expanded", String(open));
+    button?.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    iconOpen?.classList.toggle("hidden", open);
+    iconClose?.classList.toggle("hidden", !open);
+  }
+
+  function initHeaderNav() {
+    document.querySelectorAll("[data-nav-dropdown]").forEach((dropdown) => {
+      if (dropdown.dataset.navDropdownReady === "true") return;
+      dropdown.dataset.navDropdownReady = "true";
+
+      const trigger = dropdown.querySelector(".nav-dropdown-trigger");
+      const menu = dropdown.querySelector(".nav-dropdown-menu");
+      const chevron = dropdown.querySelector("[data-chevron]");
+
+      trigger?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const isOpen = !menu?.classList.contains("hidden");
+        closeNavDropdowns();
+
+        if (!isOpen) {
+          menu?.classList.remove("hidden");
+          trigger.setAttribute("aria-expanded", "true");
+          chevron?.classList.add("rotate-180");
+        }
+      });
+
+      menu?.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+    });
+
+    if (document.documentElement.dataset.headerNavGlobalReady !== "true") {
+      document.documentElement.dataset.headerNavGlobalReady = "true";
+
+      document.addEventListener("click", () => closeNavDropdowns());
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeNavDropdowns();
+          setMobileMenuOpen(false);
+        }
+      });
+    }
+
+    const button = document.getElementById("mobile-menu-button");
+
+    if (button && button.dataset.navMenuReady !== "true") {
+      button.dataset.navMenuReady = "true";
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const menu = document.getElementById("mobile-menu");
+        const isOpen = !menu?.classList.contains("hidden");
+        setMobileMenuOpen(!isOpen);
+        closeNavDropdowns();
+      });
+    }
+
+    document.querySelectorAll("#mobile-menu a").forEach((link) => {
+      if (link.dataset.mobileCloseReady === "true") return;
+      link.dataset.mobileCloseReady = "true";
+      link.addEventListener("click", () => setMobileMenuOpen(false));
+    });
+  }
+
+  initHeaderNav();
+  document.addEventListener("astro:page-load", initHeaderNav);
+</script>

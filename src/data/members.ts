@@ -2,6 +2,7 @@ export type Member = {
   name: string;
   tier: "Member" | "Champion";
   quote: string;
+  photo?: string;
 };
 
 export const members: Member[] = [

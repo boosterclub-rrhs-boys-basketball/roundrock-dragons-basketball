@@ -6,6 +6,8 @@ export type Team = {
   coach: string;
   description: string;
   achievements: string[];
+  image: string;
+  scheduleFilter: string;
 };
 
 export const teams: Team[] = [
@@ -21,6 +23,8 @@ export const teams: Team[] = [
       "Regional Semifinalists",
       "State Tournament Qualifiers",
     ],
+    image: "/teams/varsity.jpg",
+    scheduleFilter: "Varsity",
   },
   {
     id: "jv",
@@ -34,6 +38,8 @@ export const teams: Team[] = [
       "Undefeated at Home",
       "Player Development Program",
     ],
+    image: "/teams/jv.jpg",
+    scheduleFilter: "JV",
   },
   {
     id: "freshman-maroon",
@@ -47,6 +53,8 @@ export const teams: Team[] = [
       "Best Sportsmanship Award",
       "Community Service Leaders",
     ],
+    image: "/teams/freshman-maroon.jpg",
+    scheduleFilter: "Freshmen Maroon",
   },
   {
     id: "freshman-white",
@@ -60,5 +68,7 @@ export const teams: Team[] = [
       "Strong Team Chemistry",
       "Character Excellence Award",
     ],
+    image: "/teams/freshman-white.jpg",
+    scheduleFilter: "Freshmen White",
   },
 ];

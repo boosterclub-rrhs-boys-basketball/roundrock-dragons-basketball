@@ -138,3 +138,87 @@ export function formatGameDate(game: Game) {
     year: "numeric",
   });
 }
+
+export function formatGameDateLong(game: Game) {
+  const start = new Date(game.date + "T12:00:00");
+  if (game.endDate) {
+    const end = new Date(game.endDate + "T12:00:00");
+    const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+    if (sameMonth) {
+      return `${start.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${end.getDate()}, ${end.getFullYear()}`;
+    }
+    return `${start.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${end.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`;
+  }
+  return start.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+export function formatGameDateShort(game: Game) {
+  const start = new Date(game.date + "T12:00:00");
+  if (game.endDate) {
+    const end = new Date(game.endDate + "T12:00:00");
+    const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+    if (sameMonth) {
+      return `${start.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${end.getDate()}, ${end.getFullYear()}`;
+    }
+    return `${start.toLocaleDateString("en-US", { month: "long", day: "numeric" })} - ${end.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`;
+  }
+  return start.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function computeSeasonStats(filteredGames: Game[]) {
+  const completed = filteredGames.filter((g) => g.result);
+  const wins = completed.filter((g) => g.result === "W").length;
+  const losses = completed.filter((g) => g.result === "L").length;
+  const homeGames = completed.filter((g) => g.home);
+  const homeWins = homeGames.filter((g) => g.result === "W").length;
+  const homeLosses = homeGames.filter((g) => g.result === "L").length;
+  const districtGames = completed.filter((g) => g.type === "District");
+  const districtWins = districtGames.filter((g) => g.result === "W").length;
+  const districtLosses = districtGames.filter((g) => g.result === "L").length;
+
+  let totalPoints = 0;
+  for (const game of completed) {
+    if (!game.score) continue;
+    const ours = game.home ? game.score.split("-")[0] : game.score.split("-")[1];
+    totalPoints += Number.parseInt(ours, 10) || 0;
+  }
+
+  const avgPoints = completed.length > 0 ? (totalPoints / completed.length).toFixed(1) : "0.0";
+
+  return {
+    overall: `${wins}-${losses}`,
+    home: `${homeWins}-${homeLosses}`,
+    district: `${districtWins}-${districtLosses}`,
+    avgPoints,
+  };
+}
+
+export function teamMatchesFilter(team: TeamLevel, filter: string) {
+  const normalized = filter.trim().toLowerCase();
+  if (normalized === "all") return true;
+
+  const map: Record<string, TeamLevel[]> = {
+    varsity: ["Varsity"],
+    jv: ["JV"],
+    "freshmen maroon": ["Freshmen Maroon"],
+    "freshmen white": ["Freshmen White"],
+  };
+
+  return (map[normalized] ?? [filter as TeamLevel]).some(
+    (value) => value.toLowerCase() === team.toLowerCase(),
+  );
+}
+
+export function isUpcomingGame(game: Game) {
+  const today = new Date().toISOString().slice(0, 10);
+  return Boolean(game.upcoming || (!game.result && game.date >= today));
+}

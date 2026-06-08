@@ -1,21 +1,356 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
+import {
+  recognitionEntries,
+  groupByTier,
+  recognitionStats,
+  tierConfig,
+} from "../data/recognition";
+import { recognitionPage } from "../data/recognitionPage";
+import { getAvatarGradient, getInitials } from "../utils/avatar";
+
+const { hero, stats, searchPlaceholder, emptySearch, emptyAll } = recognitionPage;
+const grouped = groupByTier(recognitionEntries);
+const totals = recognitionStats(recognitionEntries);
+
+const icons = {
+  award: `<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" /><circle cx="12" cy="8" r="6" />`,
+  heart: `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />`,
+  users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />`,
+  calendar: `<path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" />`,
+  star: `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />`,
+};
+
+const badgeBase =
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors";
+const entriesJson = JSON.stringify(
+  recognitionEntries.map((entry) => ({
+    ...entry,
+    avatarGradient: getAvatarGradient(entry.name),
+    tierGradient: tierConfig[entry.level].gradient,
+  })),
+);
+const tierLabelsJson = JSON.stringify(Object.fromEntries(Object.entries(tierConfig).map(([k, v]) => [k, v.label])));
 ---
 
-<BaseLayout title="Recognition" description="Recognizing supporters of Round Rock Dragons basketball.">
-  <PageHero title="Recognition" subtitle="Celebrating those who support our program" />
-
-  <section class="py-16">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600">
-      <p class="text-lg">
-        We recognize Champion members, outstanding volunteers, and community partners who go above and beyond
-        for our program. Visit our Members and Sponsors pages to see our Dragons family.
-      </p>
-      <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href="/members" class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">View Members</a>
-        <a href="/sponsors" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">View Sponsors</a>
+<BaseLayout title="Recognition Wall" description="Meet the Round Rock Dragons booster club members who power our basketball program.">
+  <div class="min-h-screen bg-gradient-to-b from-background to-accent/20 font-sans">
+    <header class="relative overflow-hidden bg-gradient-to-r from-primary via-primary-light to-primary text-white">
+      <div
+        class="pointer-events-none absolute inset-0 opacity-20"
+        style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC4xIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+');"
+        aria-hidden="true"
+      >
       </div>
+
+      <div class="container relative mx-auto px-4 py-4 md:py-6">
+        <div class="flex flex-col items-center justify-center gap-6 text-white md:flex-row md:gap-8">
+          <img
+            src="/dragons-logo.png"
+            alt=""
+            class="h-32 w-auto drop-shadow-2xl transition-transform duration-300 hover:scale-105 md:h-48 lg:h-56"
+            aria-hidden="true"
+          />
+          <div class="space-y-3 text-center md:text-left">
+            <h1 class="text-3xl font-bold tracking-tight md:text-5xl lg:text-6xl">{hero.title}</h1>
+          </div>
+        </div>
+
+        <div class="mt-4 text-center text-white">
+          <p class="mx-auto max-w-3xl text-xl opacity-95 md:text-2xl">{hero.subtitle}</p>
+          <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-8 md:grid-cols-3">
+            <article class="rounded-lg border border-white/20 bg-white/10 p-6 text-center backdrop-blur-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.users} />
+              <div id="stat-total" class="text-4xl font-bold">{totals.totalMembers}</div>
+              <div class="text-sm opacity-90">{stats.totalMembers}</div>
+            </article>
+            <article class="rounded-lg border border-white/20 bg-white/10 p-6 text-center backdrop-blur-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.calendar} />
+              <div id="stat-years" class="text-4xl font-bold">{totals.yearsOfSupport}</div>
+              <div class="text-sm opacity-90">{stats.yearsOfSupport}</div>
+            </article>
+            <article class="rounded-lg border border-white/20 bg-white/10 p-6 text-center backdrop-blur-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.star} />
+              <div id="stat-featured" class="text-4xl font-bold">{totals.featuredMembers}</div>
+              <div class="text-sm opacity-90">{stats.featuredMembers}</div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto space-y-8 px-4 py-12">
+      <div class="relative mx-auto max-w-2xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          id="recognition-search"
+          placeholder={searchPlaceholder}
+          class="flex h-12 w-full rounded-md border border-border bg-background py-2 pl-10 pr-3 font-sans text-lg text-foreground ring-offset-background placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+        />
+      </div>
+
+      <div id="recognition-empty" class="hidden rounded-lg border border-border bg-card p-12 text-center shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-16 w-16 text-muted-foreground opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.heart} />
+        <p id="recognition-empty-text" class="text-lg text-muted-foreground">{emptyAll}</p>
+      </div>
+
+      <div id="recognition-groups" class="space-y-8">
+        {
+          grouped.map(({ level, entries }) => {
+            const tier = tierConfig[level];
+            return (
+              <section class="recognition-group space-y-6" data-tier={level}>
+                <div class="flex items-center gap-3">
+                  <div class={`rounded-lg bg-gradient-to-r p-2 ${tier.gradient}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[tier.icon]} />
+                  </div>
+                  <h2 class="text-3xl font-bold text-foreground">{tier.label}</h2>
+                  <span class={`recognition-group-count ml-2 ${badgeBase} border-transparent bg-secondary text-base text-secondary-foreground px-3 py-1`}>
+                    {entries.length}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {
+                    entries.map((entry) => {
+                      const statementPreview = entry.statement
+                        ? entry.statement.length > 120
+                          ? `${entry.statement.slice(0, 120)}...`
+                          : entry.statement
+                        : null;
+
+                      return (
+                        <article
+                          class="recognition-card group relative cursor-pointer overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                          data-entry-id={entry.id}
+                          data-name={entry.name.toLowerCase()}
+                          data-player={(entry.playerName ?? "").toLowerCase()}
+                          tabindex="0"
+                          role="button"
+                        >
+                          <div class="relative h-64 overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                            {
+                              entry.photo ? (
+                                <img src={entry.photo} alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                              ) : (
+                                <div
+                                  class="flex h-full w-full items-center justify-center text-white"
+                                  style={{ background: getAvatarGradient(entry.name) }}
+                                >
+                                  <span class="text-7xl font-bold">{getInitials(entry.name)}</span>
+                                </div>
+                              )
+                            }
+                            <div class="absolute right-3 top-3">
+                              <span class={`${badgeBase} border-transparent bg-gradient-to-r text-white shadow-lg backdrop-blur-sm ${tier.gradient}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[tier.icon]} />
+                                {tier.label}
+                              </span>
+                            </div>
+                            {
+                              entry.featured && (
+                                <div class="absolute left-3 top-3">
+                                  <span class={`${badgeBase} border-transparent bg-gradient-to-r from-yellow-500 to-amber-400 text-white shadow-lg backdrop-blur-sm`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-3 w-3 fill-current" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" set:html={icons.star} />
+                                    Featured
+                                  </span>
+                                </div>
+                              )
+                            }
+                          </div>
+
+                          <div class="space-y-3 p-6">
+                            <h3 class="text-center text-xl font-bold transition-colors group-hover:text-primary">
+                              {entry.name}
+                            </h3>
+                            {
+                              entry.playerName && (
+                                <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.users} />
+                                  <span class="font-medium">Supporting {entry.playerName}</span>
+                                </div>
+                              )
+                            }
+                            {
+                              entry.programRole && (
+                                <div class="text-center">
+                                  <span class={`${badgeBase} text-foreground`}>
+                                    {entry.programRole}
+                                  </span>
+                                </div>
+                              )
+                            }
+                            {
+                              statementPreview && (
+                                <p class="border-t pt-2 text-center text-sm italic text-muted-foreground line-clamp-2">
+                                  "{statementPreview}"
+                                </p>
+                              )
+                            }
+                            {
+                              entry.yearsSupporting > 0 && (
+                                <div class="flex items-center justify-center gap-2 pt-2">
+                                  <span class={`${badgeBase} border-transparent bg-secondary text-secondary-foreground`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.calendar} />
+                                    {entry.yearsSupporting} {entry.yearsSupporting === 1 ? "Year" : "Years"}
+                                  </span>
+                                </div>
+                              )
+                            }
+                          </div>
+                          <div class="pointer-events-none absolute inset-0 bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true"></div>
+                        </article>
+                      );
+                    })
+                  }
+                </div>
+              </section>
+            );
+          })
+        }
+      </div>
+    </main>
+  </div>
+
+  <dialog id="recognition-dialog" class="w-[calc(100%-2rem)] max-w-2xl rounded-lg border border-border bg-card p-0 text-card-foreground shadow-lg backdrop:bg-black/50">
+    <div class="max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex flex-col items-center space-y-4 py-4 text-center">
+        <div id="dialog-avatar" class="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-border text-3xl font-bold text-white"></div>
+        <div>
+          <h2 id="dialog-name" class="text-3xl font-bold text-foreground"></h2>
+          <div id="dialog-badges" class="mt-3 flex flex-wrap items-center justify-center gap-2"></div>
+        </div>
+      </div>
+      <div id="dialog-player-row" class="hidden mb-4 flex items-center justify-center gap-2 text-muted-foreground">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.users} />
+        <span id="dialog-player" class="font-medium"></span>
+      </div>
+      <blockquote id="dialog-statement" class="hidden rounded-lg border border-border bg-muted/30 p-6 text-lg leading-relaxed text-foreground"></blockquote>
+      <p id="dialog-no-story" class="hidden text-center text-muted-foreground">This member hasn't shared their story yet.</p>
+      <footer class="mt-6 flex justify-end">
+        <button type="button" id="dialog-close" class="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted">
+          Close
+        </button>
+      </footer>
     </div>
-  </section>
+  </dialog>
 </BaseLayout>
+
+<script define:vars={{ entriesJson, tierLabelsJson, emptySearch, emptyAll }}>
+  const entries = JSON.parse(entriesJson);
+  const tierLabels = JSON.parse(tierLabelsJson);
+  const searchInput = document.getElementById("recognition-search");
+  const emptyEl = document.getElementById("recognition-empty");
+  const emptyText = document.getElementById("recognition-empty-text");
+  const groupsEl = document.getElementById("recognition-groups");
+  const dialog = document.getElementById("recognition-dialog");
+  const dialogClose = document.getElementById("dialog-close");
+
+  function filterCards() {
+    const query = (searchInput?.value ?? "").trim().toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll(".recognition-group").forEach((group) => {
+      let groupVisible = 0;
+      group.querySelectorAll(".recognition-card").forEach((card) => {
+        const name = card.dataset.name ?? "";
+        const player = card.dataset.player ?? "";
+        const match = !query || name.includes(query) || player.includes(query);
+        card.classList.toggle("hidden", !match);
+        if (match) groupVisible++;
+      });
+
+      group.classList.toggle("hidden", groupVisible === 0);
+      const countEl = group.querySelector(".recognition-group-count");
+      if (countEl) countEl.textContent = String(groupVisible);
+      visibleCount += groupVisible;
+    });
+
+    const showEmpty = visibleCount === 0;
+    emptyEl?.classList.toggle("hidden", !showEmpty);
+    groupsEl?.classList.toggle("hidden", showEmpty);
+    if (emptyText) emptyText.textContent = query ? emptySearch : emptyAll;
+  }
+
+  function openDialog(entryId) {
+    const entry = entries.find((e) => e.id === entryId);
+    if (!entry || !dialog) return;
+
+    const avatar = document.getElementById("dialog-avatar");
+    const nameEl = document.getElementById("dialog-name");
+    const badgesEl = document.getElementById("dialog-badges");
+    const playerRow = document.getElementById("dialog-player-row");
+    const playerEl = document.getElementById("dialog-player");
+    const statementEl = document.getElementById("dialog-statement");
+    const noStoryEl = document.getElementById("dialog-no-story");
+
+    const badgeBaseClass =
+      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors";
+
+    if (avatar) {
+      if (entry.photo) {
+        avatar.innerHTML = `<img src="${entry.photo}" alt="" class="h-full w-full object-cover" />`;
+        avatar.style.background = "";
+      } else {
+        const initials = entry.name.trim().split(/\s+/).length === 1
+          ? entry.name.trim().substring(0, 2).toUpperCase()
+          : (entry.name.trim().split(/\s+/)[0][0] + entry.name.trim().split(/\s+/).slice(-1)[0][0]).toUpperCase();
+        avatar.textContent = initials;
+        avatar.style.background = entry.avatarGradient ?? "";
+      }
+    }
+
+    if (nameEl) nameEl.textContent = entry.name;
+    if (badgesEl) {
+      const tierLabel = tierLabels[entry.level] ?? "Member";
+      const tierGradient = entry.tierGradient ?? "from-primary to-primary-light";
+      let html = `<span class="${badgeBaseClass} border-transparent bg-gradient-to-r ${tierGradient} text-white">${tierLabel}</span>`;
+      if (entry.featured) {
+        html += `<span class="${badgeBaseClass} border-transparent bg-gradient-to-r from-yellow-500 to-amber-400 text-white">Featured</span>`;
+      }
+      if (entry.yearsSupporting > 1) {
+        html += `<span class="${badgeBaseClass} border-transparent bg-secondary text-secondary-foreground">${entry.yearsSupporting} Years</span>`;
+      }
+      badgesEl.innerHTML = html;
+    }
+
+    if (entry.playerName && playerRow && playerEl) {
+      playerRow.classList.remove("hidden");
+      playerEl.textContent = `Supporting ${entry.playerName}`;
+    } else {
+      playerRow?.classList.add("hidden");
+    }
+
+    if (entry.statement && statementEl && noStoryEl) {
+      statementEl.textContent = `"${entry.statement}"`;
+      statementEl.classList.remove("hidden");
+      noStoryEl.classList.add("hidden");
+    } else {
+      statementEl?.classList.add("hidden");
+      noStoryEl?.classList.remove("hidden");
+    }
+
+    dialog.showModal();
+  }
+
+  searchInput?.addEventListener("input", filterCards);
+
+  document.querySelectorAll(".recognition-card").forEach((card) => {
+    const open = () => openDialog(card.dataset.entryId);
+    card.addEventListener("click", open);
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
+
+  dialogClose?.addEventListener("click", () => dialog?.close());
+  dialog?.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>

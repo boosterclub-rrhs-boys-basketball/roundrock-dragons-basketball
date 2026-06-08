@@ -1,95 +1,483 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import { site } from "../data/site";
-import { games, getRecentResults, getUpcomingGames, formatGameDate } from "../data/games";
+import SectionContainer from "../components/SectionContainer.astro";
+import {
+  games,
+  computeSeasonStats,
+  formatGameDateLong,
+  formatGameDateShort,
+  isUpcomingGame,
+} from "../data/games";
 
-const upcoming = getUpcomingGames(50);
-const recent = getRecentResults(50);
+const initialStats = computeSeasonStats(games);
+const upcomingGames = games
+  .filter(isUpcomingGame)
+  .sort((a, b) => a.date.localeCompare(b.date));
+const recentGames = games
+  .filter((g) => !isUpcomingGame(g) && g.result)
+  .sort((a, b) => b.date.localeCompare(a.date));
+
+const teamFilters = ["All", "Varsity", "JV", "Freshmen Maroon", "Freshmen White"] as const;
+const typeFilters = ["All", "District", "Regular", "Tournament"] as const;
+
+function gameLocation(game: (typeof games)[number]) {
+  if (game.location && game.location !== "Home" && game.location !== "Away") {
+    return game.location;
+  }
+  return game.home ? "Home - Dragons Court" : "Away";
+}
 ---
 
 <BaseLayout title="Game Schedule" description="Follow the Round Rock Dragons basketball schedule throughout the season.">
-  <PageHero title="Game Schedule" subtitle="Follow the Dragons throughout the season" />
-
-  <section class="py-12 bg-gray-50 border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="font-display text-2xl font-bold text-dragon-maroon mb-6">Season Statistics</h2>
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
-          <div class="font-display text-3xl font-bold">{site.seasonStats.overall}</div>
-          <div class="text-sm text-gray-600 mt-1">Overall Record</div>
-        </div>
-        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
-          <div class="font-display text-3xl font-bold">{site.seasonStats.home}</div>
-          <div class="text-sm text-gray-600 mt-1">Home Record</div>
-        </div>
-        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
-          <div class="font-display text-3xl font-bold">{site.seasonStats.district}</div>
-          <div class="text-sm text-gray-600 mt-1">District Record</div>
-        </div>
-        <div class="rounded-xl bg-white p-6 text-center border border-gray-200">
-          <div class="font-display text-3xl font-bold">{site.seasonStats.avgPoints}</div>
-          <div class="text-sm text-gray-600 mt-1">Avg Points Per Game</div>
-        </div>
+  <div class="min-h-screen bg-background font-sans">
+    <section class="relative overflow-hidden py-4 bg-gradient-to-br from-primary via-primary/90 to-secondary">
+      <div class="absolute inset-0 opacity-5 pointer-events-none" aria-hidden="true">
+        <img
+          src="/schedule-logo.png"
+          alt=""
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-48 w-auto object-contain"
+        />
       </div>
-    </div>
-  </section>
-
-  <section class="py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="font-display text-2xl font-bold text-dragon-maroon mb-6">Upcoming Games</h2>
-      {
-        upcoming.length === 0 ? (
-          <p class="text-gray-500">No upcoming games scheduled at this time.</p>
-        ) : (
-          <div class="space-y-3">
-            {upcoming.map((game) => (
-              <div class="rounded-lg border border-gray-200 p-4 flex flex-wrap justify-between gap-2">
-                <div>
-                  <p class="font-bold">vs {game.opponent}</p>
-                  <p class="text-sm text-gray-600">{game.location} · {game.team}</p>
-                </div>
-                <p class="text-sm text-gray-500">{formatGameDate(game)}</p>
-              </div>
-            ))}
+      <SectionContainer class="relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+          <div class="hidden lg:flex justify-center">
+            <img src="/schedule-logo.png" alt="" class="h-16 w-auto object-contain drop-shadow-2xl" aria-hidden="true" />
           </div>
-        )
-      }
-    </div>
-  </section>
+          <div class="text-center">
+            <h1 class="font-display text-3xl md:text-4xl font-black text-primary-foreground mb-3 text-shadow uppercase tracking-wider">
+              Game Schedule
+            </h1>
+            <p class="text-lg md:text-xl text-primary-foreground/90 text-shadow font-medium">
+              Follow the Dragons throughout the season
+            </p>
+          </div>
+          <div class="hidden lg:flex justify-center">
+            <img src="/schedule-logo.png" alt="" class="h-16 w-auto object-contain drop-shadow-2xl" aria-hidden="true" />
+          </div>
+        </div>
+        <div class="lg:hidden flex justify-center mt-4">
+          <img src="/schedule-logo.png" alt="" class="h-12 w-auto object-contain drop-shadow-xl" aria-hidden="true" />
+        </div>
+      </SectionContainer>
+    </section>
 
-  <section class="py-12 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="font-display text-2xl font-bold text-dragon-maroon mb-6">Recent Results</h2>
-      <div class="space-y-3">
-        {
-          recent.map((game) => (
-            <div class="rounded-lg bg-white border border-gray-200 p-4 flex flex-wrap items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <span
-                  class:list={[
-                    "inline-flex w-8 h-8 items-center justify-center rounded-full text-sm font-bold text-white",
-                    game.result === "W" ? "bg-green-600" : "bg-red-600",
-                  ]}
-                >
-                  {game.result}
-                </span>
-                <div>
-                  <p class="font-bold">{game.opponent}</p>
-                  <p class="text-sm text-gray-600">
-                    {formatGameDate(game)} · {game.location}
-                    {game.type === "Tournament" && " · Tournament"}
-                  </p>
-                </div>
+    <section class="py-4 bg-muted">
+      <SectionContainer>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
+            <span class="text-base font-semibold text-foreground">Filter by</span>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <h3 class="text-xs font-medium text-muted-foreground uppercase tracking-wider">Teams</h3>
+              <div class="flex flex-wrap gap-2" id="team-filters">
+                {
+                  teamFilters.map((team) => (
+                    <button
+                      type="button"
+                      data-team-filter={team}
+                      class:list={[
+                        "filter-team h-9 px-3 rounded-md text-sm font-semibold transition-all duration-200",
+                        team === "All"
+                          ? "bg-primary text-primary-foreground"
+                          : "border-2 border-primary bg-card text-primary hover:bg-primary hover:text-primary-foreground",
+                      ]}
+                    >
+                      {team === "All" ? "All Teams" : team}
+                    </button>
+                  ))
+                }
               </div>
-              {game.score && <span class="font-display text-xl font-bold">{game.score}</span>}
             </div>
-          ))
-        }
-      </div>
-      <p class="mt-6 text-sm text-gray-500">
-        Showing {recent.length} recent games. Import the full schedule from your Supabase export into <code>src/data/games.ts</code>.
-      </p>
-    </div>
-  </section>
+            <div class="space-y-2">
+              <h3 class="text-xs font-medium text-muted-foreground uppercase tracking-wider">Game Types</h3>
+              <div class="flex flex-wrap gap-2" id="type-filters">
+                {
+                  typeFilters.map((type) => (
+                    <button
+                      type="button"
+                      data-type-filter={type}
+                      class:list={[
+                        "filter-type h-9 px-3 rounded-md text-sm font-semibold transition-all duration-200",
+                        type === "All"
+                          ? "bg-secondary text-secondary-foreground"
+                          : "border-2 border-primary bg-card text-primary hover:bg-primary hover:text-primary-foreground",
+                      ]}
+                    >
+                      {type === "All" ? "All Games" : type === "Tournament" ? "Tournaments" : type}
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-8" id="season-stats">
+      <SectionContainer class="text-center">
+        <h2 class="text-2xl font-bold mb-6 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary mr-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+          </svg>
+          <span id="stats-heading">Season Statistics</span>
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div>
+            <div class="text-3xl font-bold text-primary mb-2" id="stat-overall">{initialStats.overall}</div>
+            <div class="text-sm text-muted-foreground">Overall Record</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-primary mb-2" id="stat-home">{initialStats.home}</div>
+            <div class="text-sm text-muted-foreground">Home Record</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-primary mb-2" id="stat-district">{initialStats.district}</div>
+            <div class="text-sm text-muted-foreground">District Record</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-primary mb-2" id="stat-avg">{initialStats.avgPoints}</div>
+            <div class="text-sm text-muted-foreground">Avg Points Per Game</div>
+          </div>
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-12" id="upcoming-games">
+      <SectionContainer>
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary mr-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M8 2v4M16 2v4M3 10h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+          </svg>
+          Upcoming Games
+        </h2>
+        <p id="upcoming-empty" class:list={["text-center py-8 text-xl text-muted-foreground", upcomingGames.length > 0 && "hidden"]}>
+          No upcoming games scheduled at this time.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16" id="upcoming-grid">
+          {
+            upcomingGames.map((game) => (
+              <article
+                class="schedule-game schedule-upcoming rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-dramatic transition-all duration-300 hover:scale-105 border-l-4 border-l-primary"
+                data-team={game.team}
+                data-type={game.type}
+                data-section="upcoming"
+              >
+                <div class="p-6 pb-3">
+                  <div class="flex items-center justify-between gap-2">
+                    <h3 class="text-lg font-semibold leading-none tracking-tight">{game.opponent}</h3>
+                    <span
+                      class:list={[
+                        "px-2 py-1 rounded text-xs font-semibold shrink-0",
+                        game.home ? "bg-secondary text-primary" : "bg-primary text-primary-foreground",
+                      ]}
+                    >
+                      {game.home ? "HOME" : "AWAY"}
+                    </span>
+                  </div>
+                </div>
+                <div class="p-6 pt-0">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M8 2v4M16 2v4M3 10h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                      </svg>
+                      <span>{formatGameDateLong(game)}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      <span>{gameLocation(game)}</span>
+                    </div>
+                  </div>
+                  <a
+                    href="https://www.roundrockdragons.com/HTtickets"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center w-full mt-4 h-10 px-4 rounded-md border-2 border-primary bg-card text-primary text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
+                  >
+                    Get Tickets
+                  </a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <img src="/dragons-logo.png" alt="" class="h-6 w-6 mr-3 object-contain shrink-0" aria-hidden="true" />
+          Recent Results
+        </h2>
+        <p id="recent-empty" class:list={["text-center py-8 text-xl text-muted-foreground", recentGames.length > 0 && "hidden"]}>
+          No past games to display.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="recent-grid">
+          {
+            recentGames.map((game) => (
+              <article
+                class="schedule-game schedule-recent rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-glow transition-all duration-300 border-l-4 border-l-secondary"
+                data-team={game.team}
+                data-type={game.type}
+                data-section="recent"
+              >
+                <div class="p-6 pb-3">
+                  <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <h3 class="text-lg font-semibold leading-none tracking-tight">{game.opponent}</h3>
+                    <div class="flex items-center gap-2 shrink-0">
+                      {
+                        game.result && (
+                          <span class="bg-secondary text-primary px-2 py-1 rounded text-sm font-bold">
+                            {game.result}
+                          </span>
+                        )
+                      }
+                      {
+                        game.score && (
+                          <span class="bg-secondary text-primary px-2 py-1 rounded text-sm font-bold">
+                            {game.score}
+                          </span>
+                        )
+                      }
+                    </div>
+                  </div>
+                </div>
+                <div class="p-6 pt-0">
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-muted-foreground text-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M8 2v4M16 2v4M3 10h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                      </svg>
+                      <span>{formatGameDateShort(game)}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-muted-foreground text-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      <span>{gameLocation(game)}</span>
+                    </div>
+                    {
+                      game.type === "Tournament" && (
+                        <div class="mt-2">
+                          <span class="inline-block bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
+                            Tournament
+                          </span>
+                        </div>
+                      )
+                    }
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </SectionContainer>
+    </section>
+
+    <button
+      type="button"
+      id="back-to-stats"
+      class="hidden fixed bottom-6 right-6 z-50 h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+      aria-label="Back to season statistics"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="m5 12 7-7 7 7M12 19V5" />
+      </svg>
+    </button>
+  </div>
+
+  <script type="application/json" id="schedule-games-data" set:html={JSON.stringify(games)} />
 </BaseLayout>
+
+<script>
+  type GameRecord = {
+    id: string;
+    opponent: string;
+    date: string;
+    endDate?: string;
+    location: string;
+    home: boolean;
+    team: string;
+    type: string;
+    result?: string;
+    score?: string;
+    upcoming?: boolean;
+  };
+
+  const teamMap: Record<string, string[]> = {
+    All: [],
+    Varsity: ["Varsity"],
+    JV: ["JV"],
+    "Freshmen Maroon": ["Freshmen Maroon"],
+    "Freshmen White": ["Freshmen White"],
+  };
+
+  const teamParamAliases: Record<string, string> = {
+    "Junior Varsity": "JV",
+    Freshman: "Freshmen Maroon",
+  };
+
+  const validTeamFilters = ["All", "Varsity", "JV", "Freshmen Maroon", "Freshmen White"];
+
+  let activeTeam = "All";
+  let activeType = "All";
+
+  function normalize(value: string) {
+    return value.trim().toLowerCase();
+  }
+
+  function teamMatches(team: string, filter: string) {
+    if (filter === "All") return true;
+    return (teamMap[filter] ?? [filter]).some((entry) => normalize(entry) === normalize(team));
+  }
+
+  function typeMatches(type: string, filter: string) {
+    if (filter === "All") return true;
+    return normalize(type) === normalize(filter);
+  }
+
+  function isUpcoming(game: GameRecord) {
+    const today = new Date().toISOString().slice(0, 10);
+    return Boolean(game.upcoming || (!game.result && game.date >= today));
+  }
+
+  function computeStats(filtered: GameRecord[]) {
+    const completed = filtered.filter((game) => game.result);
+    const wins = completed.filter((game) => game.result === "W").length;
+    const losses = completed.filter((game) => game.result === "L").length;
+    const homeGames = completed.filter((game) => game.home);
+    const homeWins = homeGames.filter((game) => game.result === "W").length;
+    const homeLosses = homeGames.filter((game) => game.result === "L").length;
+    const districtGames = completed.filter((game) => normalize(game.type) === "district");
+    const districtWins = districtGames.filter((game) => game.result === "W").length;
+    const districtLosses = districtGames.filter((game) => game.result === "L").length;
+
+    let totalPoints = 0;
+    for (const game of completed) {
+      if (!game.score) continue;
+      const [first, second] = game.score.split("-").map((part) => Number.parseInt(part, 10));
+      totalPoints += game.home ? first : second;
+    }
+
+    return {
+      overall: `${wins}-${losses}`,
+      home: `${homeWins}-${homeLosses}`,
+      district: `${districtWins}-${districtLosses}`,
+      avgPoints: completed.length > 0 ? (totalPoints / completed.length).toFixed(1) : "0.0",
+    };
+  }
+
+  function setTeamButtonStyles() {
+    document.querySelectorAll<HTMLButtonElement>(".filter-team").forEach((button) => {
+      const selected = button.dataset.teamFilter === activeTeam;
+      button.classList.toggle("bg-primary", selected);
+      button.classList.toggle("text-primary-foreground", selected);
+      button.classList.toggle("border-2", !selected);
+      button.classList.toggle("border-primary", !selected);
+      button.classList.toggle("bg-card", !selected);
+      button.classList.toggle("text-primary", !selected);
+    });
+  }
+
+  function setTypeButtonStyles() {
+    document.querySelectorAll<HTMLButtonElement>(".filter-type").forEach((button) => {
+      const selected = button.dataset.typeFilter === activeType;
+      button.classList.toggle("bg-secondary", selected);
+      button.classList.toggle("text-secondary-foreground", selected);
+      button.classList.toggle("border-2", !selected);
+      button.classList.toggle("border-primary", !selected);
+      button.classList.toggle("bg-card", !selected);
+      button.classList.toggle("text-primary", !selected);
+    });
+  }
+
+  function applyFilters() {
+    const data = JSON.parse(document.getElementById("schedule-games-data")?.textContent || "[]") as GameRecord[];
+    const filtered = data.filter(
+      (game) => teamMatches(game.team, activeTeam) && typeMatches(game.type, activeType),
+    );
+    const stats = computeStats(filtered);
+
+    document.getElementById("stat-overall")!.textContent = stats.overall;
+    document.getElementById("stat-home")!.textContent = stats.home;
+    document.getElementById("stat-district")!.textContent = stats.district;
+    document.getElementById("stat-avg")!.textContent = stats.avgPoints;
+
+    const heading = document.getElementById("stats-heading")!;
+    heading.textContent = activeTeam === "All" ? "Season Statistics" : `Season Statistics - ${activeTeam}`;
+
+    let visibleUpcoming = 0;
+    let visibleRecent = 0;
+
+    document.querySelectorAll<HTMLElement>(".schedule-game").forEach((card) => {
+      const team = card.dataset.team || "";
+      const type = card.dataset.type || "";
+      const matches = teamMatches(team, activeTeam) && typeMatches(type, activeType);
+      card.classList.toggle("hidden", !matches);
+
+      if (matches) {
+        if (card.classList.contains("schedule-upcoming")) visibleUpcoming += 1;
+        if (card.classList.contains("schedule-recent")) visibleRecent += 1;
+      }
+    });
+
+    document.getElementById("upcoming-empty")?.classList.toggle("hidden", visibleUpcoming > 0);
+    document.getElementById("recent-empty")?.classList.toggle("hidden", visibleRecent > 0);
+
+    setTeamButtonStyles();
+    setTypeButtonStyles();
+  }
+
+  function initSchedulePage() {
+    if (document.body.dataset.scheduleReady === "true") return;
+    document.body.dataset.scheduleReady = "true";
+
+    const teamParam = new URLSearchParams(window.location.search).get("team");
+    if (teamParam) {
+      const resolved = teamParamAliases[teamParam] ?? teamParam;
+      if (validTeamFilters.includes(resolved)) {
+        activeTeam = resolved;
+      }
+    }
+
+    document.querySelectorAll<HTMLButtonElement>(".filter-team").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeTeam = button.dataset.teamFilter || "All";
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>(".filter-type").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeType = button.dataset.typeFilter || "All";
+        applyFilters();
+      });
+    });
+
+    const statsSection = document.getElementById("season-stats");
+    const backButton = document.getElementById("back-to-stats");
+
+    const onScroll = () => {
+      if (!statsSection || !backButton) return;
+      const rect = statsSection.getBoundingClientRect();
+      backButton.classList.toggle("hidden", rect.bottom >= 0);
+      backButton.classList.toggle("inline-flex", rect.bottom < 0);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    backButton?.addEventListener("click", () => {
+      statsSection?.scrollIntoView({ behavior: "smooth" });
+    });
+
+    applyFilters();
+  }
+
+  initSchedulePage();
+  document.addEventListener("astro:page-load", initSchedulePage);
+</script>

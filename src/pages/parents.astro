@@ -1,54 +1,253 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
+import { parentsPage } from "../data/parentsPage";
+import { site } from "../data/site";
+
+const { title, subtitle, hint, placeholder, submitLabel, verifyingLabel, helpText, contactLabel, contact } =
+  parentsPage;
 ---
 
-<BaseLayout title="Parents" description="Parent portal for Round Rock Dragons basketball.">
-  <PageHero title="Parent Portal" subtitle="Access orders, forms, calendar, and team updates" />
-
-  <section class="py-16">
-    <div class="max-w-lg mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 class="font-display text-xl font-bold text-dragon-maroon">Sign In</h2>
-        <p class="mt-2 text-gray-600 text-sm">
-          Parent login, ticket management, and order history will be available in Phase 2 of the migration.
-          This replaces the Supabase Auth system with Cloudflare D1 + secure session tokens at zero monthly cost.
-        </p>
-
-        <form class="mt-6 space-y-4" action="/api/auth/login" method="post">
-          <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
-              placeholder="parent@example.com"
-            />
-          </div>
-          <div>
-            <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full px-4 py-3 rounded-md bg-dragon-maroon text-white font-bold hover:bg-dragon-maroon-dark"
-          >
-            Sign In
-          </button>
-        </form>
-
-        <p class="mt-6 text-xs text-gray-500 text-center">
-          Need access? Contact <a href="mailto:boosterclub@roundrockbasketball.org" class="text-dragon-maroon">boosterclub@roundrockbasketball.org</a>
-        </p>
-      </div>
+<BaseLayout title="Parents" description="Parents Hub access for Round Rock Dragons basketball families.">
+  <div class="flex min-h-screen flex-col bg-gradient-to-br from-background via-background to-muted">
+    <div class="container mx-auto px-4 py-6">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-primary"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="m12 19-7-7 7-7" /><path d="M19 12H5" />
+        </svg>
+        Back to Home
+      </a>
     </div>
-  </section>
+
+    <div class="flex flex-1 items-center justify-center px-4 pb-8">
+      <article class="w-full max-w-md rounded-lg border border-border bg-card text-card-foreground shadow-lg">
+        <header class="space-y-4 p-6 pb-0 text-center">
+          <div class="mx-auto flex w-fit items-center justify-center rounded-full bg-primary/10 p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+            <p class="mt-2 text-sm text-muted-foreground">{subtitle}</p>
+          </div>
+        </header>
+
+        <div class="p-6">
+          <form id="parents-access-form" class="space-y-4" novalidate>
+            <div class="relative">
+              <input
+                type="password"
+                id="access-code"
+                name="password"
+                autocomplete="current-password"
+                autofocus
+                required
+                placeholder={placeholder}
+                class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 pr-10 font-sans text-base text-lg md:text-sm text-center tracking-wider ring-offset-background placeholder:text-sm placeholder:font-normal placeholder:tracking-normal placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              <button
+                type="button"
+                id="toggle-password"
+                class="absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Show password"
+              >
+                <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" />
+                </svg>
+                <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" class="hidden h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.548 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.605" /><path d="m2 2 20 20" />
+                </svg>
+              </button>
+            </div>
+
+            <p class="flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" />
+              </svg>
+              <span class="italic">{hint}</span>
+            </p>
+
+            <div id="access-error" class="hidden rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-800" role="alert"></div>
+
+            <button
+              type="submit"
+              id="access-submit"
+              disabled
+              class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
+            >
+              <svg id="access-spinner" xmlns="http://www.w3.org/2000/svg" class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+              <span id="access-submit-label">{submitLabel}</span>
+            </button>
+          </form>
+
+          <div class="mt-6 border-t border-border pt-6 text-center font-sans text-sm font-normal text-muted-foreground">
+            <p>{helpText}</p>
+            <button
+              type="button"
+              id="open-contact"
+              class="mt-1 inline-flex h-auto border-0 bg-transparent p-0 text-xs font-semibold text-primary underline-offset-4 hover:underline"
+            >
+              {contactLabel}
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <dialog
+    id="contact-dialog"
+    class="w-[calc(100%-2rem)] max-w-md rounded-lg border border-border bg-card p-0 text-card-foreground shadow-lg backdrop:bg-black/50 open:animate-in"
+  >
+    <form id="contact-form" method="dialog" class="p-6">
+      <header class="mb-4">
+        <h2 class="text-lg font-bold text-foreground">{contact.title}</h2>
+        <p class="mt-1 text-sm text-muted-foreground">{contact.description}</p>
+      </header>
+
+      <div class="space-y-4">
+        <div>
+          <label for="contact-name" class="block text-sm font-medium text-foreground">{contact.nameLabel} *</label>
+          <input
+            type="text"
+            id="contact-name"
+            name="name"
+            required
+            class="mt-1 flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          />
+        </div>
+        <div>
+          <label for="contact-email" class="block text-sm font-medium text-foreground">{contact.emailLabel} *</label>
+          <input
+            type="email"
+            id="contact-email"
+            name="email"
+            required
+            class="mt-1 flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          />
+        </div>
+        <div>
+          <label for="contact-subject" class="block text-sm font-medium text-foreground">{contact.subjectLabel} *</label>
+          <input
+            type="text"
+            id="contact-subject"
+            name="subject"
+            required
+            value={contact.subject}
+            class="mt-1 flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          />
+        </div>
+        <div>
+          <label for="contact-message" class="block text-sm font-medium text-foreground">{contact.messageLabel} *</label>
+          <textarea
+            id="contact-message"
+            name="message"
+            required
+            rows="4"
+            class="mt-1 flex w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          ></textarea>
+        </div>
+      </div>
+
+      <footer class="mt-6 flex justify-end gap-2">
+        <button
+          type="button"
+          id="contact-cancel"
+          class="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+        >
+          {contact.cancelLabel}
+        </button>
+        <button
+          type="submit"
+          id="contact-send"
+          class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+        >
+          {contact.sendLabel}
+        </button>
+      </footer>
+    </form>
+  </dialog>
 </BaseLayout>
+
+<script define:vars={{ verifyingLabel, submitLabel, contactEmail: site.email }}>
+  const form = document.getElementById("parents-access-form");
+  const input = document.getElementById("access-code");
+  const submit = document.getElementById("access-submit");
+  const submitLabelEl = document.getElementById("access-submit-label");
+  const spinner = document.getElementById("access-spinner");
+  const errorEl = document.getElementById("access-error");
+  const toggleBtn = document.getElementById("toggle-password");
+  const iconEye = document.getElementById("icon-eye");
+  const iconEyeOff = document.getElementById("icon-eye-off");
+  const contactDialog = document.getElementById("contact-dialog");
+  const openContact = document.getElementById("open-contact");
+  const contactCancel = document.getElementById("contact-cancel");
+  const contactForm = document.getElementById("contact-form");
+
+  function setSubmitEnabled() {
+    submit.disabled = !input.value.trim() || submit.dataset.loading === "true";
+  }
+
+  input?.addEventListener("input", setSubmitEnabled);
+
+  toggleBtn?.addEventListener("click", () => {
+    const showing = input.type === "text";
+    input.type = showing ? "password" : "text";
+    iconEye.classList.toggle("hidden", !showing);
+    iconEyeOff.classList.toggle("hidden", showing);
+    toggleBtn.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    errorEl.classList.add("hidden");
+    submit.dataset.loading = "true";
+    submit.disabled = true;
+    spinner.classList.remove("hidden");
+    submitLabelEl.textContent = verifyingLabel;
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: input.value }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Invalid access code. Please try again.");
+      }
+
+      window.location.href = "/parent-email-capture";
+    } catch (error) {
+      errorEl.textContent = error instanceof Error ? error.message : "Invalid access code. Please try again.";
+      errorEl.classList.remove("hidden");
+      input.value = "";
+      input.focus();
+    } finally {
+      submit.dataset.loading = "false";
+      spinner.classList.add("hidden");
+      submitLabelEl.textContent = submitLabel;
+      setSubmitEnabled();
+    }
+  });
+
+  openContact?.addEventListener("click", () => contactDialog?.showModal());
+  contactCancel?.addEventListener("click", () => contactDialog?.close());
+
+  contactForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = document.getElementById("contact-name").value.trim();
+    const email = document.getElementById("contact-email").value.trim();
+    const subject = document.getElementById("contact-subject").value.trim();
+    const message = document.getElementById("contact-message").value.trim();
+    const body = `From: ${name} (${email})\n\n${message}`;
+    window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    contactDialog?.close();
+  });
+</script>

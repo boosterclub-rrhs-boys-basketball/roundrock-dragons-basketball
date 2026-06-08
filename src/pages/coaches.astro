@@ -1,59 +1,163 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import { coaches } from "../data/coaches";
+import { coaches, coachLastName } from "../data/coaches";
+
+const dotPattern = `url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')`;
+const defaultPhoto = "/coaches/placeholder.jpg";
+
+function bioParagraphs(text: string) {
+  return text.split("\n\n").filter(Boolean);
+}
 ---
 
-<BaseLayout title="Coaches" description="Meet the Round Rock Dragons coaching staff.">
-  <PageHero title="Our Coaches" subtitle="Leaders who build champions on and off the court" />
+<BaseLayout title="Coaching Staff" description="Meet the Round Rock Dragons coaching staff.">
+  <div class="min-h-screen bg-background font-sans">
+    <section class="relative overflow-hidden py-8 bg-gradient-to-br from-primary via-primary/90 to-secondary">
+      <div class="absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true">
+        <div
+          class="absolute top-0 left-0 w-full h-full"
+          style={`background-image: ${dotPattern}; background-repeat: repeat;`}
+        />
+      </div>
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute left-[-5%] top-1/2 -translate-y-1/2 opacity-5 w-96 h-96">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain" />
+        </div>
+        <div class="absolute right-[-5%] top-1/2 -translate-y-1/2 opacity-5 w-96 h-96">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain" />
+        </div>
+        <div class="absolute left-[15%] top-[15%] opacity-15 w-24 h-24 animate-pulse">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain drop-shadow-xl" />
+        </div>
+        <div class="absolute right-[15%] bottom-[15%] opacity-15 w-24 h-24 animate-pulse" style="animation-delay: 1s">
+          <img src="/coaching-logo.png" alt="" class="w-full h-full object-contain drop-shadow-xl" />
+        </div>
+      </div>
+      <div class="absolute -top-8 -right-8 w-32 h-32 bg-secondary/20 rounded-full blur-xl pointer-events-none" aria-hidden="true" />
+      <div class="absolute -bottom-8 -left-8 w-24 h-24 bg-primary-foreground/10 rounded-full blur-xl pointer-events-none" aria-hidden="true" />
 
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      {
-        coaches.map((coach) => (
-          <article class:list={["rounded-2xl overflow-hidden border", coach.featured ? "border-dragon-maroon shadow-lg" : "border-gray-200"]}>
-            <div class="grid lg:grid-cols-3">
-              <div class="lg:col-span-1 bg-dragon-dark text-white p-8">
-                <h2 class="font-display text-3xl font-bold">{coach.name}</h2>
-                <p class="text-dragon-gold font-semibold mt-1">{coach.title}</p>
-                {coach.team && <p class="text-white/70 mt-1">{coach.team}</p>}
-                <p class="mt-6 text-sm text-white/80">{coach.credentials}</p>
-                {
-                  coach.stats.length > 0 && (
-                    <div class="grid grid-cols-2 gap-4 mt-8">
-                      {coach.stats.map((stat) => (
-                        <div>
-                          <div class="font-display text-2xl font-bold">{stat.value}</div>
-                          <div class="text-xs text-white/70">{stat.label}</div>
-                        </div>
-                      ))}
+      <div class="relative z-10 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+          <div class="hidden lg:flex justify-center">
+            <img
+              src="/coaching-logo.png"
+              alt=""
+              class="h-20 w-auto object-contain drop-shadow-2xl animate-pulse"
+              aria-hidden="true"
+            />
+          </div>
+          <div class="text-center">
+            <h1 class="font-display text-4xl md:text-6xl font-black text-primary-foreground mb-4 text-shadow uppercase tracking-wider">
+              Coaching Staff
+            </h1>
+            <p class="text-xl text-primary-foreground/90 text-shadow font-medium max-w-3xl mx-auto">
+              Meet the dedicated coaches developing our Dragons basketball players both on and off the court
+            </p>
+          </div>
+          <div class="hidden lg:flex justify-center">
+            <img
+              src="/coaching-logo.png"
+              alt=""
+              class="h-20 w-auto object-contain drop-shadow-2xl animate-pulse"
+              style="animation-delay: 1s"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+        <div class="lg:hidden flex justify-center mt-4">
+          <img src="/coaching-logo.png" alt="" class="h-12 w-auto object-contain drop-shadow-xl" aria-hidden="true" />
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Coaching Team</h2>
+          <p class="text-xl text-muted-foreground">
+            Experienced leaders committed to developing championship teams and outstanding young men
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {
+            coaches.map((coach) => (
+              <article class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-glow transition-all duration-300">
+                <div class="p-6">
+                  <div class="text-center mb-6">
+                    <img
+                      src={coach.photo ?? defaultPhoto}
+                      alt={coach.name}
+                      class="w-32 h-32 rounded-full object-cover mx-auto mb-4 shadow-primary"
+                      loading="lazy"
+                      onerror={`this.src='${defaultPhoto}'`}
+                    />
+                    <h3 class="text-xl font-bold">{coach.name}</h3>
+                    <p class="text-secondary font-semibold">{coach.title}</p>
+                  </div>
+
+                  <div class="mb-6">
+                    <h4 class="font-semibold mb-2">About Coach {coachLastName(coach.name)}</h4>
+                    <div class="text-sm text-muted-foreground space-y-3 leading-relaxed">
+                      {
+                        coach.listItems ? (
+                          <>
+                            <p>{coach.bio}</p>
+                            {coach.listIntro && <p>{coach.listIntro}</p>}
+                            <ul class="list-disc ml-4 space-y-1">
+                              {coach.listItems.map((item) => (
+                                <li>{item}</li>
+                              ))}
+                            </ul>
+                            {coach.bioAfterList &&
+                              bioParagraphs(coach.bioAfterList).map((paragraph) => <p>{paragraph}</p>)}
+                          </>
+                        ) : (
+                          bioParagraphs(coach.bio).map((paragraph) => <p>{paragraph}</p>)
+                        )
+                      }
                     </div>
-                  )
-                }
-              </div>
-              <div class="lg:col-span-2 p-8">
-                <div class="text-gray-600 leading-relaxed whitespace-pre-line">{coach.bio}</div>
-                {
-                  coach.careerHighlights && (
-                    <ul class="mt-6 space-y-2 text-gray-600 list-disc list-inside">
-                      {coach.careerHighlights.map((item) => (
-                        <li>{item}</li>
-                      ))}
-                    </ul>
-                  )
-                }
-                {
-                  coach.quote && (
-                    <blockquote class="mt-6 border-l-4 border-dragon-maroon pl-4 italic text-gray-700">
-                      "{coach.quote}"
-                    </blockquote>
-                  )
-                }
-              </div>
-            </div>
-          </article>
-        ))
-      }
-    </div>
-  </section>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-4 text-center mb-6">
+                    <div>
+                      <div class="text-2xl font-bold text-secondary">{coach.yearsExperience}</div>
+                      <div class="text-xs text-muted-foreground">Years Experience</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-secondary">{coach.championships}</div>
+                      <div class="text-xs text-muted-foreground">Championships</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-secondary">{coach.playersCoached}+</div>
+                      <div class="text-xs text-muted-foreground">Players Coached</div>
+                    </div>
+                  </div>
+
+                  <div class="space-y-3">
+                    {
+                      coach.education && (
+                        <div>
+                          <h4 class="font-semibold mb-1 text-sm">Education</h4>
+                          <p class="text-sm text-muted-foreground">{coach.education}</p>
+                        </div>
+                      )
+                    }
+                    {
+                      coach.certifications && (
+                        <div>
+                          <h4 class="font-semibold mb-1 text-sm">Certifications</h4>
+                          <p class="text-sm text-muted-foreground">{coach.certifications}</p>
+                        </div>
+                      )
+                    }
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </div>
 </BaseLayout>

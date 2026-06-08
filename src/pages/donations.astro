@@ -1,29 +1,540 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
+import {
+  donationsPage,
+  donationTotals,
+  campaignPercent,
+  formatCurrency,
+} from "../data/donationsPage";
 import { site } from "../data/site";
+
+const {
+  hero,
+  progress,
+  tabs,
+  form,
+  impact,
+  recentDonors,
+  tiersSection,
+  presetAmounts,
+  campaigns,
+  givingTiers,
+  recurringOptions,
+} = donationsPage;
+
+const badgeBase =
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors";
+
+const icons = {
+  calendarDays: `<path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" />`,
+  gift: `<rect x="3" y="8" width="18" height="4" rx="1" /><path d="M12 8v13" /><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" /><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />`,
+  creditCard: `<rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" />`,
+  heart: `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />`,
+  users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />`,
+  star: `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />`,
+  target: `<circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />`,
+  award: `<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" /><circle cx="12" cy="8" r="6" />`,
+  trophy: `<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" /><path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" /><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" /><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />`,
+};
+
+function tierIcon(icon: string) {
+  if (icon === "DragonsLogo") return "logo";
+  if (icon === "Heart") return icons.heart;
+  if (icon === "Users") return icons.users;
+  if (icon === "Star") return icons.star;
+  if (icon === "Award") return icons.award;
+  if (icon === "Trophy") return icons.trophy;
+  return icons.heart;
+}
 ---
 
-<BaseLayout title="Donations" description="Support Round Rock Dragons basketball with a donation.">
-  <PageHero title="Support Our Team" subtitle="Your donation helps our student-athletes succeed on and off the court" />
-
-  <section class="py-16">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <p class="text-gray-600 text-lg">
-        Donations fund program needs including equipment, travel, team building, and scholarships.
-        Contact us to make a donation or explore sponsorship opportunities.
-      </p>
-      <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href={`mailto:${site.email}?subject=Donation Inquiry`} class="px-6 py-3 rounded-md bg-dragon-maroon text-white font-bold">
-          Donate via Contact
-        </a>
-        <a href="/sponsors" class="px-6 py-3 rounded-md border-2 border-dragon-maroon text-dragon-maroon font-bold">
-          Become a Sponsor
-        </a>
+<BaseLayout title="Donations" description="Support Round Rock Dragons basketball with a tax-deductible donation.">
+  <div class="min-h-screen bg-background font-system">
+    <section class="hero-gradient py-20">
+      <div class="mx-auto max-w-[1800px] px-4 text-center sm:px-8 lg:px-12">
+        <h1 class="mb-4 text-4xl font-bold text-primary-foreground text-shadow md:text-6xl">{hero.title}</h1>
+        <p class="mx-auto max-w-3xl text-xl text-primary-foreground/90 text-shadow">{hero.subtitle}</p>
       </div>
-      <p class="mt-8 text-sm text-gray-500">
-        Online donation checkout via Square can be enabled in Phase 2.
-      </p>
+    </section>
+
+    <div class="mx-auto max-w-[1800px] px-4 py-16 sm:px-8 lg:px-12">
+      <section class="mb-16">
+        <div class="mb-8 text-center">
+          <h2 class="mb-4 text-3xl font-bold text-foreground">{progress.title}</h2>
+          <p class="text-muted-foreground">{progress.subtitle}</p>
+        </div>
+
+        <article class="mb-8 rounded-lg border bg-gradient-to-r from-primary/5 to-secondary/5 text-card-foreground shadow-sm">
+          <div class="p-8">
+            <div class="mb-6 text-center">
+              <div class="mb-2 text-4xl font-bold text-secondary">${formatCurrency(donationTotals.raised)}</div>
+              <div class="text-muted-foreground">{progress.raisedOfGoal(donationTotals.raised, donationTotals.goal)}</div>
+            </div>
+            <div class="mb-4 h-4 w-full overflow-hidden rounded-full bg-muted">
+              <div class="h-full rounded-full bg-secondary transition-all duration-300" style={`width: ${donationTotals.percent}%`}></div>
+            </div>
+            <div class="text-center text-lg font-semibold text-foreground">{progress.completeLabel(donationTotals.percent)}</div>
+          </div>
+        </article>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {
+            campaigns.map((campaign) => {
+              const pct = campaignPercent(campaign.currentAmount, campaign.targetAmount);
+              return (
+                <article
+                  class:list={[
+                    "rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-glow",
+                    campaign.urgent && "ring-2 ring-orange-500",
+                  ]}
+                >
+                  <header class="flex flex-col space-y-1.5 p-6 pb-4">
+                    <div class="flex items-center justify-between gap-2">
+                      <h3 class="text-lg font-semibold leading-none tracking-tight text-foreground">{campaign.name}</h3>
+                      {
+                        campaign.urgent && (
+                          <span class={`${badgeBase} border-transparent bg-orange-500 text-white`}>
+                            Urgent
+                          </span>
+                        )
+                      }
+                    </div>
+                  </header>
+                  <div class="p-6 pt-0">
+                    <p class="mb-4 text-sm text-muted-foreground">{campaign.description}</p>
+                    <div class="space-y-2">
+                      <div class="flex justify-between text-sm text-foreground">
+                        <span>${formatCurrency(campaign.currentAmount)}</span>
+                        <span>${formatCurrency(campaign.targetAmount)}</span>
+                      </div>
+                      <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+                        <div class="h-full rounded-full bg-secondary transition-all duration-300" style={`width: ${pct}%`}></div>
+                      </div>
+                      <div class="text-center text-xs text-muted-foreground">{pct}% funded</div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })
+          }
+        </div>
+      </section>
+
+      <div class="w-full" id="donation-tabs">
+        <div
+          role="tablist"
+          aria-label="Donation sections"
+          class="grid h-10 w-full grid-cols-2 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground"
+        >
+          <button
+            type="button"
+            role="tab"
+            id="tab-donate"
+            aria-controls="panel-donate"
+            aria-selected="true"
+            data-tab-trigger="donate"
+            data-state="active"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+          >
+            {tabs.donate}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-tiers"
+            aria-controls="panel-tiers"
+            aria-selected="false"
+            data-tab-trigger="tiers"
+            data-state="inactive"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+          >
+            {tabs.tiers}
+          </button>
+        </div>
+
+        <div id="panel-donate" role="tabpanel" aria-labelledby="tab-donate" data-tab-panel="donate" class="mt-8">
+          <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+            <article class="rounded-lg border bg-card p-8 text-card-foreground shadow-sm">
+              <header class="flex flex-col space-y-1.5 px-0 pt-0">
+                <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{form.title}</h3>
+              </header>
+              <div class="px-0 pt-6">
+                <form id="donation-form" class="space-y-6">
+                  <div>
+                    <span class="text-base font-semibold text-foreground">{form.donationType}</span>
+                    <div class="mt-2 grid grid-cols-2 gap-4">
+                      <button
+                        type="button"
+                        data-donation-type="one-time"
+                        class="donation-type-btn inline-flex h-12 items-center justify-center rounded-md bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
+                      >
+                        {form.oneTime}
+                      </button>
+                      <button
+                        type="button"
+                        data-donation-type="recurring"
+                        class="donation-type-btn inline-flex h-12 items-center justify-center rounded-md border-2 border-primary bg-background px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.calendarDays} />
+                        {form.recurring}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="recurring-frequency" hidden>
+                    <label for="donation-frequency" class="mb-1 block text-sm font-medium text-foreground">{form.frequency}</label>
+                    <select
+                      id="donation-frequency"
+                      name="frequency"
+                      class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      {
+                        recurringOptions.map((option) => (
+                          <option value={option.value}>{option.label}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+
+                  <div>
+                    <span class="text-base font-semibold text-foreground">{form.amount}</span>
+                    <div class="mb-4 mt-2 grid grid-cols-3 gap-3">
+                      {
+                        presetAmounts.map((amount) => (
+                          <button
+                            type="button"
+                            data-preset-amount={amount}
+                            class="amount-btn inline-flex h-12 items-center justify-center rounded-md border-2 border-primary bg-background text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                          >
+                            ${amount}
+                          </button>
+                        ))
+                      }
+                    </div>
+                    <label for="custom-amount" class="mb-1 block text-sm font-medium text-foreground">{form.customAmount}</label>
+                    <input
+                      type="number"
+                      id="custom-amount"
+                      name="customAmount"
+                      min="1"
+                      step="1"
+                      placeholder={form.customPlaceholder}
+                      class="mt-1 flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="donation-campaign" class="mb-1 block text-sm font-medium text-foreground">{form.designate}</label>
+                    <select
+                      id="donation-campaign"
+                      name="campaign"
+                      class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      <option value="general">{form.generalFund}</option>
+                      {
+                        campaigns.map((campaign) => (
+                          <option value={campaign.id}>{campaign.name}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+
+                  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                      <label for="first-name" class="mb-1 block text-sm font-medium text-foreground">{form.firstName}</label>
+                      <input type="text" id="first-name" name="firstName" required class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" />
+                    </div>
+                    <div>
+                      <label for="last-name" class="mb-1 block text-sm font-medium text-foreground">{form.lastName}</label>
+                      <input type="text" id="last-name" name="lastName" required class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="donation-email" class="mb-1 block text-sm font-medium text-foreground">{form.email}</label>
+                    <input type="email" id="donation-email" name="email" required class="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" />
+                  </div>
+
+                  <div>
+                    <label for="donation-message" class="mb-1 block text-sm font-medium text-foreground">{form.message}</label>
+                    <textarea
+                      id="donation-message"
+                      name="message"
+                      rows={3}
+                      placeholder={form.messagePlaceholder}
+                      class="flex w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    ></textarea>
+                  </div>
+
+                  <div class="space-y-3">
+                    <label class="flex items-center gap-2 text-sm text-foreground">
+                      <input type="checkbox" name="anonymous" class="h-4 w-4 rounded border-border text-primary focus:ring-primary/40" />
+                      {form.anonymous}
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-foreground">
+                      <input type="checkbox" name="newsletter" checked class="h-4 w-4 rounded border-border text-primary focus:ring-primary/40" />
+                      {form.newsletter}
+                    </label>
+                  </div>
+
+                  <button
+                    type="submit"
+                    id="donation-submit"
+                    class="inline-flex h-11 w-full items-center justify-center rounded-md bg-gradient-primary px-8 text-lg font-semibold text-primary-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.creditCard} />
+                    {form.submit}
+                  </button>
+                  <p class="text-center text-xs text-muted-foreground">{form.footnote}</p>
+                </form>
+              </div>
+            </article>
+
+            <div class="space-y-6">
+              <article class="rounded-lg border bg-accent p-6 text-card-foreground shadow-sm">
+                <header class="flex flex-col space-y-1.5 px-0 pt-0">
+                  <h3 class="flex items-center text-2xl font-semibold leading-none tracking-tight text-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.gift} />
+                    {impact.title}
+                  </h3>
+                </header>
+                <div class="space-y-4 px-0 pt-6">
+                  {
+                    impact.items.map((item) => (
+                      <div class="rounded-lg bg-background p-4">
+                        <h4 class="mb-2 font-semibold text-foreground">${item.amount} provides:</h4>
+                        <p class="text-sm text-muted-foreground">{item.description}</p>
+                      </div>
+                    ))
+                  }
+                </div>
+              </article>
+
+              <article class="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
+                <header class="flex flex-col space-y-1.5 px-0 pt-0">
+                  <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{recentDonors.title}</h3>
+                </header>
+                <div class="space-y-3 px-0 pt-6">
+                  {
+                    donationsPage.recentDonorsList.length > 0 ? (
+                      donationsPage.recentDonorsList.slice(0, 5).map((donor) => (
+                        <div class="flex items-center justify-between">
+                          <span class="font-medium text-foreground">{donor.displayName}</span>
+                          <span class="font-bold text-secondary">${formatCurrency(donor.amount)}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p class="text-sm text-muted-foreground">{recentDonors.empty}</p>
+                    )
+                  }
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-tiers" role="tabpanel" aria-labelledby="tab-tiers" data-tab-panel="tiers" hidden class="mt-8">
+          <div class="mb-8 text-center">
+            <h2 class="mb-4 text-3xl font-bold text-foreground">{tiersSection.title}</h2>
+            <p class="text-muted-foreground">{tiersSection.subtitle}</p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {
+              givingTiers.map((tier) => {
+                const iconMarkup = tierIcon(tier.icon);
+                return (
+                  <article
+                    class:list={[
+                      "relative rounded-lg border bg-card text-center text-card-foreground shadow-sm transition-all duration-300 hover:shadow-glow",
+                      tier.popular && "scale-105 ring-2 ring-secondary",
+                    ]}
+                  >
+                    {
+                      tier.popular && (
+                        <span class={`${badgeBase} absolute -top-3 left-1/2 -translate-x-1/2 border-transparent bg-secondary text-primary-foreground`}>
+                          {tiersSection.popularBadge}
+                        </span>
+                      )
+                    }
+                    <header class="flex flex-col space-y-1.5 p-6">
+                      <div class={`mx-auto mb-4 ${tier.color}`}>
+                        {
+                          tier.icon === "DragonsLogo" ? (
+                            <img src="/dragons-logo.png" alt="" class="mx-auto h-12 w-12 object-contain" />
+                          ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={iconMarkup} />
+                          )
+                        }
+                      </div>
+                      <h3 class="text-xl font-semibold leading-none tracking-tight text-foreground">{tier.name}</h3>
+                      <div class="text-3xl font-bold text-secondary">${tier.amount}</div>
+                    </header>
+                    <div class="p-6 pt-0">
+                      <ul class="mb-6 space-y-2 text-left text-sm text-foreground">
+                        {
+                          tier.benefits.map((benefit) => (
+                            <li class="flex items-start">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 mt-0.5 h-3 w-3 shrink-0 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.star} />
+                              {benefit}
+                            </li>
+                          ))
+                        }
+                      </ul>
+                      <button
+                        type="button"
+                        class:list={[
+                          "tier-select-btn inline-flex h-10 w-full items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors",
+                          tier.popular
+                            ? "bg-gradient-primary text-primary-foreground hover:opacity-90"
+                            : "border-2 border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground",
+                        ]}
+                        data-tier-amount={tier.amount}
+                      >
+                        {tiersSection.chooseLevel}
+                      </button>
+                    </div>
+                  </article>
+                );
+              })
+            }
+          </div>
+
+          <div class="mt-16">
+            <h3 class="mb-8 text-center text-2xl font-bold text-foreground">{tiersSection.allDonorsTitle}</h3>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {
+                tiersSection.perks.map((perk) => (
+                  <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-12 w-12 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[perk.icon]} />
+                    <h4 class="mb-2 text-lg font-semibold text-foreground">{perk.title}</h4>
+                    <p class="text-muted-foreground">{perk.description}</p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 </BaseLayout>
+
+<script define:vars={{ siteEmail: site.email, phase2Note: form.phase2Note }}>
+  const triggers = document.querySelectorAll("[data-tab-trigger]");
+  const panels = document.querySelectorAll("[data-tab-panel]");
+  const donationForm = document.getElementById("donation-form");
+  const recurringBlock = document.getElementById("recurring-frequency");
+  const typeButtons = document.querySelectorAll(".donation-type-btn");
+  const amountButtons = document.querySelectorAll(".amount-btn");
+  const customAmountInput = document.getElementById("custom-amount");
+  const tierSelectButtons = document.querySelectorAll(".tier-select-btn");
+
+  let donationType = "one-time";
+  let selectedAmount = null;
+
+  const heroBtn =
+    "inline-flex h-12 items-center justify-center rounded-md bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90";
+  const outlineBtn =
+    "inline-flex h-12 items-center justify-center rounded-md border-2 border-primary bg-background px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground";
+  const amountHero =
+    "inline-flex h-12 items-center justify-center rounded-md bg-gradient-primary text-sm font-bold text-primary-foreground transition-colors hover:opacity-90";
+  const amountOutline =
+    "inline-flex h-12 items-center justify-center rounded-md border-2 border-primary bg-background text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground";
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      const tab = trigger.dataset.tabTrigger;
+      triggers.forEach((t) => {
+        const active = t.dataset.tabTrigger === tab;
+        t.setAttribute("aria-selected", active ? "true" : "false");
+        t.dataset.state = active ? "active" : "inactive";
+      });
+      panels.forEach((panel) => {
+        const active = panel.dataset.tabPanel === tab;
+        panel.toggleAttribute("hidden", !active);
+      });
+    });
+  });
+
+  typeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      donationType = button.dataset.donationType ?? "one-time";
+      typeButtons.forEach((btn) => {
+        btn.className = btn.dataset.donationType === donationType ? heroBtn : outlineBtn;
+      });
+      recurringBlock?.toggleAttribute("hidden", donationType !== "recurring");
+    });
+  });
+
+  function setSelectedAmount(amount) {
+    selectedAmount = amount;
+    amountButtons.forEach((btn) => {
+      const value = Number(btn.dataset.presetAmount);
+      btn.className = value === amount ? amountHero : amountOutline;
+    });
+    if (customAmountInput) customAmountInput.value = "";
+  }
+
+  amountButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setSelectedAmount(Number(button.dataset.presetAmount));
+    });
+  });
+
+  customAmountInput?.addEventListener("input", () => {
+    selectedAmount = null;
+    amountButtons.forEach((btn) => {
+      btn.className = amountOutline;
+    });
+  });
+
+  tierSelectButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const amount = Number(button.dataset.tierAmount);
+      document.querySelector('[data-tab-trigger="donate"]')?.click();
+      setSelectedAmount(amount);
+      window.scrollTo({ top: donationForm?.offsetTop ?? 0, behavior: "smooth" });
+    });
+  });
+
+  donationForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(donationForm);
+    const customAmount = Number(formData.get("customAmount"));
+    const amount = selectedAmount || customAmount;
+    if (!amount || amount <= 0) {
+      window.alert("Please select or enter a valid donation amount.");
+      return;
+    }
+
+    const firstName = String(formData.get("firstName") ?? "");
+    const lastName = String(formData.get("lastName") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const campaignSelect = document.getElementById("donation-campaign");
+    const campaignLabel =
+      campaignSelect instanceof HTMLSelectElement
+        ? campaignSelect.options[campaignSelect.selectedIndex]?.text
+        : "General Fund";
+    const frequency = String(formData.get("frequency") ?? "monthly");
+    const message = String(formData.get("message") ?? "");
+    const anonymous = formData.get("anonymous") ? "Yes" : "No";
+    const newsletter = formData.get("newsletter") ? "Yes" : "No";
+
+    const body = [
+      `Donation Type: ${donationType === "recurring" ? `Recurring (${frequency})` : "One-Time"}`,
+      `Amount: $${amount}`,
+      `Designation: ${campaignLabel}`,
+      `Name: ${firstName} ${lastName}`,
+      `Email: ${email}`,
+      `Anonymous: ${anonymous}`,
+      `Newsletter: ${newsletter}`,
+      message && `\nMessage:\n${message}`,
+      `\n${phase2Note}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    window.location.href = `mailto:${siteEmail}?subject=${encodeURIComponent(`Donation - $${amount}`)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

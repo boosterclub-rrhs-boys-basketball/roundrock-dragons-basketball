@@ -1,44 +1,275 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import { site } from "../data/site";
+import PageHeader from "../components/PageHeader.astro";
+import { helpPage } from "../data/helpPage";
+
+const { hero, searchPlaceholder, tabs, overview, features, technology, database, faq } = helpPage;
+
+const badgeBase =
+  "inline-flex items-center rounded-full border border-transparent bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground transition-colors";
+
+const cardClass = "rounded-lg border border-primary/20 bg-background/50 text-card-foreground shadow-sm backdrop-blur-sm";
+const tabBtnClass =
+  "help-tab inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm";
+
+const icons = {
+  book: `<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />`,
+  help: `<circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" />`,
+  zap: `<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />`,
+  database: `<ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5V19A9 3 0 0 0 21 19V5" /><path d="M3 12A9 3 0 0 0 21 12" />`,
+  search: `<circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />`,
+  globe: `<circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" />`,
+  settings: `<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" />`,
+  users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />`,
+  shield: `<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />`,
+};
+
+function featureIcon(name: string) {
+  if (name in icons) return icons[name as keyof typeof icons];
+  return icons.help;
+}
 ---
 
-<BaseLayout title="Help" description="Get help with the Round Rock Dragons website and booster club.">
-  <PageHero title="Help & FAQ" subtitle="Answers to common questions" />
+<BaseLayout title="Help" description="Help and documentation for the Rock Hoops platform.">
+  <div class="min-h-screen bg-gradient-to-br from-background to-muted/20 font-system">
+    <PageHeader title={hero.title} subtitle={hero.subtitle} />
 
-  <section class="py-16">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      {
-        [
-          {
-            q: "How do I join the booster club?",
-            a: "Visit our Join page or email us to get membership information.",
-          },
-          {
-            q: "Where can I find the game schedule?",
-            a: "The full schedule is on our Schedule page, updated throughout the season.",
-          },
-          {
-            q: "How do I purchase spirit wear or tickets?",
-            a: "Visit the Store page. Products are powered by Square for secure checkout.",
-          },
-          {
-            q: "Who maintains this website?",
-            a: site.disclaimer,
-          },
-        ].map((item) => (
-          <div class="rounded-xl border border-gray-200 p-6">
-            <h2 class="font-display text-lg font-bold text-dragon-maroon">{item.q}</h2>
-            <p class="mt-2 text-gray-600">{item.a}</p>
+    <div class="container mx-auto px-4 py-8">
+      <div class="mx-auto mb-8 max-w-2xl">
+        <div class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.search} />
+          <input
+            type="search"
+            id="help-search"
+            placeholder={searchPlaceholder}
+            class="flex h-10 w-full rounded-md border border-border bg-background/50 py-2 pl-10 pr-3 text-sm text-foreground backdrop-blur-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          />
+        </div>
+      </div>
+
+      <div id="help-tabs" class="space-y-6">
+        <div
+          role="tablist"
+          aria-label="Help sections"
+          class="grid w-full grid-cols-2 gap-1 rounded-md bg-background/50 p-1 backdrop-blur-sm lg:grid-cols-5"
+        >
+          <button type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true" data-tab-trigger="overview" data-state="active" class={tabBtnClass}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.book} />
+            {tabs.overview}
+          </button>
+          <button type="button" role="tab" id="tab-features" aria-controls="panel-features" aria-selected="false" data-tab-trigger="features" data-state="inactive" class={tabBtnClass}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.help} />
+            {tabs.features}
+          </button>
+          <button type="button" role="tab" id="tab-technology" aria-controls="panel-technology" aria-selected="false" data-tab-trigger="technology" data-state="inactive" class={tabBtnClass}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.zap} />
+            {tabs.technology}
+          </button>
+          <button type="button" role="tab" id="tab-database" aria-controls="panel-database" aria-selected="false" data-tab-trigger="database" data-state="inactive" class={tabBtnClass}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.database} />
+            {tabs.database}
+          </button>
+          <button type="button" role="tab" id="tab-faq" aria-controls="panel-faq" aria-selected="false" data-tab-trigger="faq" data-state="inactive" class={tabBtnClass}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.help} />
+            {tabs.faq}
+          </button>
+        </div>
+
+        <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-tab-panel="overview" class="space-y-6">
+          <article class={cardClass} data-search-item data-search-text={`${overview.title} ${overview.description} ${overview.architecture.join(" ")} ${overview.capabilities.join(" ")}`}>
+            <header class="flex flex-col space-y-1.5 p-6">
+              <h3 class="flex items-center gap-2 text-2xl font-semibold leading-none tracking-tight text-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons.book} />
+                {overview.title}
+              </h3>
+              <p class="text-sm text-muted-foreground">{overview.description}</p>
+            </header>
+            <div class="space-y-4 p-6 pt-0">
+              <div class="grid gap-6 md:grid-cols-2">
+                <div>
+                  <h4 class="mb-2 font-semibold text-foreground">{overview.architectureTitle}</h4>
+                  <ul class="space-y-1 text-sm text-muted-foreground">
+                    {overview.architecture.map((item) => (
+                      <li>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="mb-2 font-semibold text-foreground">{overview.capabilitiesTitle}</h4>
+                  <ul class="space-y-1 text-sm text-muted-foreground">
+                    {overview.capabilities.map((item) => (
+                      <li>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div id="panel-features" role="tabpanel" aria-labelledby="tab-features" data-tab-panel="features" hidden class="space-y-6">
+          <div class="grid gap-6 lg:grid-cols-2">
+            {
+              features.map((feature) => (
+                <article
+                  class={cardClass}
+                  data-search-item
+                  data-search-text={`${feature.title} ${feature.description} ${feature.items.join(" ")}`}
+                >
+                  <header class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="flex items-center gap-2 text-2xl font-semibold leading-none tracking-tight text-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={featureIcon(feature.icon)} />
+                      {feature.title}
+                    </h3>
+                    <p class="text-sm text-muted-foreground">{feature.description}</p>
+                  </header>
+                  <div class="p-6 pt-0">
+                    <ul class="space-y-2">
+                      {
+                        feature.items.map((item) => (
+                          <li class="flex items-start gap-2 text-sm text-muted-foreground">
+                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
+                            {item}
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  </div>
+                </article>
+              ))
+            }
           </div>
-        ))
-      }
+        </div>
 
-      <p class="text-center text-gray-600">
-        Still need help? Email <a href={`mailto:${site.email}`} class="text-dragon-maroon font-semibold">{site.email}</a>
-        or call <a href={`tel:${site.phone.replace(/\D/g, "")}`} class="text-dragon-maroon font-semibold">{site.phone}</a>.
-      </p>
+        <div id="panel-technology" role="tabpanel" aria-labelledby="tab-technology" data-tab-panel="technology" hidden class="space-y-6">
+          <div class="grid gap-6 md:grid-cols-2">
+            <article class={cardClass} data-search-item data-search-text={`${technology.stackTitle} ${technology.stackDescription} ${technology.stack.map((s) => `${s.name} ${s.category} ${s.description}`).join(" ")}`}>
+              <header class="flex flex-col space-y-1.5 p-6">
+                <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{technology.stackTitle}</h3>
+                <p class="text-sm text-muted-foreground">{technology.stackDescription}</p>
+              </header>
+              <div class="p-6 pt-0">
+                <div class="space-y-3">
+                  {
+                    technology.stack.map((item) => (
+                      <div class="flex items-center justify-between rounded-lg bg-muted/50 p-3">
+                        <div>
+                          <div class="font-medium text-foreground">{item.name}</div>
+                          <div class="text-sm text-muted-foreground">{item.description}</div>
+                        </div>
+                        <span class={badgeBase}>{item.category}</span>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+            </article>
+
+            <article class={cardClass} data-search-item data-search-text={`${technology.edgeTitle} ${technology.edgeDescription} ${technology.edgeFunctions.map((f) => `${f.name} ${f.description}`).join(" ")}`}>
+              <header class="flex flex-col space-y-1.5 p-6">
+                <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{technology.edgeTitle}</h3>
+                <p class="text-sm text-muted-foreground">{technology.edgeDescription}</p>
+              </header>
+              <div class="p-6 pt-0">
+                <div class="space-y-3">
+                  {
+                    technology.edgeFunctions.map((item) => (
+                      <div class="rounded-lg bg-muted/50 p-3">
+                        <div class="font-medium text-foreground">{item.name}</div>
+                        <div class="text-sm text-muted-foreground">{item.description}</div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div id="panel-database" role="tabpanel" aria-labelledby="tab-database" data-tab-panel="database" hidden class="space-y-6">
+          <div class="grid gap-6 md:grid-cols-2">
+            {
+              database.sections.map((section) => (
+                <article
+                  class={cardClass}
+                  data-search-item
+                  data-search-text={`${section.title} ${section.entries.map((e) => `${e.module} ${e.description}`).join(" ")}`}
+                >
+                  <header class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{section.title}</h3>
+                  </header>
+                  <div class="space-y-2 p-6 pt-0">
+                    {
+                      section.entries.map((entry) => (
+                        <div class="text-sm text-foreground">
+                          <strong>{entry.module}:</strong> {entry.description}
+                        </div>
+                      ))
+                    }
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+
+        <div id="panel-faq" role="tabpanel" aria-labelledby="tab-faq" data-tab-panel="faq" hidden class="space-y-6">
+          <article class={cardClass}>
+            <header class="flex flex-col space-y-1.5 p-6">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight text-foreground">{faq.title}</h3>
+              <p class="text-sm text-muted-foreground">{faq.description}</p>
+            </header>
+            <div class="p-6 pt-0">
+              <div class="w-full divide-y divide-border">
+                {
+                  faq.items.map((item) => (
+                    <details class="group py-1" data-search-item data-search-text={`${item.question} ${item.answer}`}>
+                      <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-left font-medium text-foreground [&::-webkit-details-marker]:hidden">
+                        {item.question}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      </summary>
+                      <p class="pb-4 text-sm text-muted-foreground">{item.answer}</p>
+                    </details>
+                  ))
+                }
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 </BaseLayout>
+
+<script>
+  const triggers = document.querySelectorAll("[data-tab-trigger]");
+  const panels = document.querySelectorAll("[data-tab-panel]");
+  const searchInput = document.getElementById("help-search");
+  const searchItems = document.querySelectorAll("[data-search-item]");
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      const tab = trigger.dataset.tabTrigger;
+      triggers.forEach((t) => {
+        const active = t.dataset.tabTrigger === tab;
+        t.setAttribute("aria-selected", active ? "true" : "false");
+        t.dataset.state = active ? "active" : "inactive";
+      });
+      panels.forEach((panel) => {
+        const active = panel.dataset.tabPanel === tab;
+        panel.toggleAttribute("hidden", !active);
+      });
+    });
+  });
+
+  searchInput?.addEventListener("input", () => {
+    const query = String(searchInput.value ?? "").trim().toLowerCase();
+    searchItems.forEach((item) => {
+      const text = (item.getAttribute("data-search-text") ?? "").toLowerCase();
+      const matches = !query || text.includes(query);
+      item.classList.toggle("hidden", !matches);
+    });
+  });
+</script>

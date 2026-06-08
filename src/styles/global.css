@@ -1,36 +1,110 @@
 @import "tailwindcss";
 
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: hsl(0 0% 84%);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-sans);
+  }
+}
+
 @theme {
   --color-dragon-maroon: hsl(345 75% 32%);
   --color-dragon-maroon-dark: hsl(345 80% 22%);
   --color-dragon-maroon-light: hsl(345 70% 42%);
   --color-dragon-silver: hsl(0 0% 80%);
   --color-dragon-silver-fg: hsl(0 0% 15%);
+  --color-foreground: hsl(355 60% 18%);
+  --color-background: hsl(0 0% 97%);
+  --color-card: hsl(0 0% 100%);
+  --color-primary: hsl(345 75% 32%);
+  --color-primary-light: hsl(345 70% 42%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(0 0% 80%);
+  --color-secondary-foreground: hsl(0 0% 15%);
+  --color-muted: hsl(0 0% 92%);
+  --color-border: hsl(0 0% 84%);
   --color-card-foreground: hsl(355 60% 18%);
   --color-muted-foreground: hsl(355 60% 25%);
   --color-accent: hsl(345 70% 42%);
+  --color-accent-foreground: hsl(0 0% 100%);
+  --gradient-accent: linear-gradient(135deg, hsl(0 0% 80%), hsl(0 0% 85%));
   --color-dragon-gold: #c9a227;
   --color-dragon-dark: #1a1a1a;
   --color-nav-gray: hsl(0 0% 35%);
+  --color-nav-gray-foreground: hsl(0 0% 98%);
   --font-display: "Oswald", sans-serif;
   --font-body: "Montserrat", sans-serif;
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: var(--font-body);
-  color: #1a1a1a;
+:root {
+  --accent: 345 70% 42%;
+  --accent-foreground: 0 0% 100%;
+  --gradient-accent: linear-gradient(135deg, hsl(0 0% 80%), hsl(0 0% 85%));
+  --gradient-hero: linear-gradient(
+    135deg,
+    hsl(345 80% 22%) 0%,
+    hsl(345 75% 32%) 50%,
+    hsl(345 70% 42%) 75%,
+    hsl(0 0% 80%) 100%
+  );
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
+.hero-gradient {
+  background: var(--gradient-hero);
+}
+
+body {
+  color: hsl(355 60% 18%);
+}
+
+.font-system {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.font-system :is(button, input, textarea, select) {
+  font-family: inherit;
 }
 
 .text-shadow {
   text-shadow: 0 2px 8px rgb(0 0 0 / 35%);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .shadow-glow {
@@ -45,8 +119,16 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 4px 14px hsl(0 0% 0% / 0.18);
 }
 
+.shadow-elegant {
+  box-shadow: 0 4px 20px hsl(345 75% 30% / 0.08);
+}
+
 .hover\:shadow-dramatic:hover {
   box-shadow: 0 20px 65px -20px hsl(345 75% 30% / 0.55);
+}
+
+.shadow-primary {
+  box-shadow: 0 10px 35px -10px hsl(345 75% 32% / 0.4);
 }
 
 .bg-gradient-primary {
@@ -54,5 +136,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bg-accent {
-  background-color: hsl(345 70% 42%);
+  background-color: hsl(var(--accent));
+}
+
+.bg-muted {
+  background-color: hsl(0 0% 92%);
+}
+
+.bg-gradient-accent {
+  background-image: var(--gradient-accent);
+}
+
+.bg-card {
+  background-color: hsl(0 0% 100%);
 }

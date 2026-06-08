@@ -1,38 +1,209 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import { members } from "../data/members";
+import SectionContainer from "../components/SectionContainer.astro";
+import { membersPage } from "../data/membersPage";
+
+const { hero, stats, impact, benefits, testimonials, cta } = membersPage;
+
+const icons = {
+  users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />`,
+  trending: `<path d="M22 7 13.5 15.5 8.5 10.5 2 17" /><path d="M16 7h6v6" />`,
+  award: `<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z" />`,
+  star: `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />`,
+  target: `<circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />`,
+  zap: `<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />`,
+  sparkles: `<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4M22 5h-4M4 17v2M5 18H3" />`,
+  heart: `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />`,
+};
 ---
 
-<BaseLayout title="Members" description="Meet the Round Rock Dragons booster club members.">
-  <PageHero
-    title="Our Members"
-    subtitle="The families and supporters who make our program possible"
-  />
+<BaseLayout title="Members" description="Join the Round Rock Dragons booster club and support our student-athletes.">
+  <div class="min-h-screen bg-background font-sans">
+    <section class="relative overflow-hidden py-8 bg-gradient-to-br from-primary via-primary/90 to-secondary">
+      <div class="absolute inset-0 opacity-5 pointer-events-none" aria-hidden="true">
+        <img
+          src="/members-logo.png"
+          alt=""
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-48 w-auto object-contain"
+        />
+      </div>
 
-  <section class="py-16">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      {
-        members.map((member) => (
-          <blockquote class="rounded-2xl bg-white border border-gray-200 p-8 shadow-sm">
-            <span class="inline-block px-3 py-1 rounded-full bg-dragon-maroon/10 text-dragon-maroon text-xs font-bold uppercase">
-              {member.tier}
-            </span>
-            <h2 class="font-display text-2xl font-bold mt-4">{member.name}</h2>
-            <p class="mt-4 text-gray-600 leading-relaxed text-lg">{member.quote}</p>
-          </blockquote>
-        ))
-      }
-    </div>
-  </section>
+      <SectionContainer class="relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center mb-8">
+          <div class="hidden lg:flex justify-center">
+            <img src="/members-logo.png" alt="" class="h-16 w-auto object-contain drop-shadow-2xl" aria-hidden="true" />
+          </div>
+          <div class="text-center">
+            <h1 class="font-display text-3xl md:text-5xl font-black text-primary-foreground mb-3 text-shadow uppercase tracking-wider">
+              {hero.title}
+            </h1>
+            <p class="text-lg md:text-xl text-primary-foreground/90 text-shadow font-medium">
+              {hero.subtitle}
+            </p>
+          </div>
+          <div class="hidden lg:flex justify-center">
+            <img src="/members-logo.png" alt="" class="h-16 w-auto object-contain drop-shadow-2xl" aria-hidden="true" />
+          </div>
+        </div>
 
-  <section class="py-12 bg-dragon-maroon text-white text-center">
-    <div class="max-w-2xl mx-auto px-4">
-      <h2 class="font-display text-2xl font-bold">Become a Member</h2>
-      <p class="mt-3 text-white/90">Join the booster club and help support our student-athletes.</p>
-      <a href="/join" class="inline-flex mt-6 px-6 py-3 rounded-md bg-white text-dragon-maroon font-bold">
-        Join Today
-      </a>
-    </div>
-  </section>
+        <div class="lg:hidden flex justify-center mb-4">
+          <img src="/members-logo.png" alt="" class="h-12 w-auto object-contain drop-shadow-xl" aria-hidden="true" />
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/join"
+            class="inline-flex items-center justify-center h-12 px-8 rounded-md bg-secondary text-secondary-foreground text-lg font-semibold transition-all duration-300 hover:bg-secondary/80 shadow-glow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+            Become a Member Today
+          </a>
+          <a
+            href="/recognition"
+            class="inline-flex items-center justify-center h-12 px-8 rounded-md border border-primary-foreground/20 bg-white/10 text-primary-foreground text-lg font-semibold transition-all duration-300 hover:bg-white/20"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+            </svg>
+            See Our Members
+          </a>
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-16 bg-muted text-foreground">
+      <SectionContainer>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-foreground">{stats.title}</h2>
+          <p class="text-xl text-muted-foreground max-w-2xl mx-auto">{stats.subtitle}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {
+            stats.items.map((item) => (
+              <div class="text-center">
+                <div class="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[item.icon]} />
+                </div>
+                <h3 class="text-3xl font-bold mb-2 text-primary">
+                  {item.value}{item.suffix}
+                </h3>
+                <p class="text-muted-foreground font-medium">{item.label}</p>
+              </div>
+            ))
+          }
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-16">
+      <SectionContainer>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4">{impact.title}</h2>
+          <p class="text-xl text-muted-foreground max-w-2xl mx-auto">{impact.subtitle}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {
+            impact.items.map((item) => (
+              <article class="rounded-lg border border-border bg-card text-card-foreground shadow-sm hover:shadow-dramatic transition-all duration-300 hover:scale-105">
+                <div class="p-8 text-center">
+                  <div class="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[item.icon]} />
+                  </div>
+                  <h3 class="text-xl font-bold mb-3 text-foreground">{item.title}</h3>
+                  <p class="text-sm text-muted-foreground">{item.description}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-16 bg-accent text-foreground">
+      <SectionContainer>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-foreground">{benefits.title}</h2>
+          <p class="text-xl text-muted-foreground max-w-2xl mx-auto">{benefits.subtitle}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {
+            benefits.items.map((item) => (
+              <div class="flex gap-4">
+                <div class="bg-primary rounded-full w-12 h-12 flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[item.icon]} />
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold mb-2 text-foreground">{item.title}</h3>
+                  <p class="text-muted-foreground">{item.description}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-16">
+      <SectionContainer>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4">{testimonials.title}</h2>
+          <p class="text-xl text-muted-foreground">{testimonials.subtitle}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {
+            testimonials.items.map((item) => (
+              <article class="rounded-lg border bg-card text-card-foreground shadow-sm border-l-4 border-l-primary">
+                <div class="p-8">
+                  <div class="flex gap-1 mb-4" aria-hidden="true">
+                    {
+                      Array.from({ length: 5 }).map(() => (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-primary text-primary" viewBox="0 0 24 24" aria-hidden="true">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      ))
+                    }
+                  </div>
+                  <p class="text-lg mb-4 italic">{item.quote}</p>
+                  <p class="font-semibold">- {item.author}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </SectionContainer>
+    </section>
+
+    <section class="py-20 bg-primary text-primary-foreground">
+      <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">{cta.title}</h2>
+        <p class="text-xl mb-8 opacity-90">{cta.text}</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/join"
+            class="inline-flex items-center justify-center h-12 px-8 rounded-md bg-secondary text-secondary-foreground text-lg font-semibold transition-all duration-300 hover:bg-secondary/80 shadow-glow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+            {cta.joinLabel}
+          </a>
+          <a
+            href="/parents"
+            class="inline-flex items-center justify-center h-12 px-8 rounded-md bg-secondary text-secondary-foreground text-lg font-semibold transition-all duration-300 hover:bg-secondary/80 shadow-glow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
+            </svg>
+            {cta.loginLabel}
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
 </BaseLayout>

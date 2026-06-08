@@ -1,95 +1,124 @@
 ---
 import type { Coach } from "../data/coaches";
 import SectionContainer from "./SectionContainer.astro";
-import PrimaryButton from "./PrimaryButton.astro";
 
 interface Props {
   coach: Coach;
 }
 
 const { coach } = Astro.props;
-const bioParagraphs = coach.bio.split("\n\n");
-const introParagraphs = bioParagraphs.slice(0, 2);
-const closingParagraphs = bioParagraphs.slice(2);
+const bioParagraphs = coach.bio.split("\n\n").filter(Boolean);
+const introParagraph = bioParagraphs[0];
+const closingParagraphs = bioParagraphs.slice(1);
+const [headingFirst, headingLast] = coach.name.split(" ");
 ---
 
-<section class="py-8 bg-white">
+<section class="py-10 bg-dragon-maroon text-white">
   <SectionContainer>
-    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       <div>
-        <h2 class="font-display text-3xl sm:text-4xl font-bold text-dragon-maroon">Meet Coach Levie</h2>
+        <h2 class="font-display text-2xl md:text-3xl font-bold mb-4">
+          Meet {headingFirst} {headingLast}
+        </h2>
 
-        <div class="mt-6 rounded-2xl overflow-hidden shadow-dramatic lg:hidden">
-          <img
-            src="/coach-levie.jpg"
-            alt="Coach Travis Levie"
-            class="w-full aspect-[4/5] object-cover object-top"
-            loading="lazy"
-          />
+        <div class="text-base text-white/90 mb-5 max-w-none space-y-4 leading-relaxed">
+          {introParagraph && <p>{introParagraph}</p>}
+
+          {
+            coach.careerHighlights && (
+              <div>
+                <p class="font-semibold text-white">
+                  Over the past 17 years, he has served in multiple leadership roles:
+                </p>
+                <ul class="mt-3 space-y-1 list-disc ml-6">
+                  {coach.careerHighlights.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+
+          {closingParagraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
         </div>
 
-        <div class="mt-6 text-muted-foreground space-y-4 leading-relaxed">
-          {introParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <a
+          href="/coaches"
+          class="inline-flex items-center justify-center h-11 px-8 rounded-md bg-dragon-silver text-dragon-silver-fg font-bold text-sm transition-all duration-300 hover:bg-dragon-silver/80"
+        >
+          Meet All Coaches
+        </a>
+      </div>
+
+      <div class="space-y-6">
+        <div class="rounded-xl overflow-hidden shadow-dramatic bg-white">
+          {
+            coach.photo && (
+              <img
+                src={coach.photo}
+                alt={coach.name}
+                class="w-full h-[420px] object-cover object-[50%_30%]"
+                loading="lazy"
+              />
+            )
+          }
+          <div class="p-4">
+            <h3 class="text-lg font-bold text-card-foreground">{coach.name}</h3>
+            <p class="text-sm text-muted-foreground">{coach.title}</p>
+            {
+              (coach.education || coach.certifications) && (
+                <p class="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  {coach.education}
+                  {coach.education && coach.certifications && <br />}
+                  {coach.certifications}
+                </p>
+              )
+            }
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <div class="text-center">
+            <div class="bg-dragon-silver rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
+              <img src="/dragons-logo.png" alt="" class="h-6 w-6 object-contain" aria-hidden="true" />
+            </div>
+            <div class="font-display text-xl font-bold text-dragon-silver">{coach.yearsExperience}</div>
+            <div class="text-xs opacity-90">Years Experience</div>
+          </div>
+
+          <div class="text-center">
+            <div class="bg-dragon-silver rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-dragon-maroon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 15l-2 5 2-1 2 1-2-5M8.5 8.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0Z" />
+                <path d="M6 21h12" />
+              </svg>
+            </div>
+            <div class="font-display text-xl font-bold text-dragon-silver">{coach.championships}</div>
+            <div class="text-xs opacity-90">Championships</div>
+          </div>
+
+          <div class="text-center">
+            <div class="bg-dragon-silver rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-dragon-maroon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <div class="font-display text-xl font-bold text-dragon-silver">{coach.playersCoached}+</div>
+            <div class="text-xs opacity-90">Players Coached</div>
+          </div>
         </div>
 
         {
-          coach.careerHighlights && (
-            <div class="mt-6">
-              <p class="font-semibold text-card-foreground">
-                Over the past 17 years, he has served in multiple leadership roles:
-              </p>
-              <ul class="mt-3 space-y-2 text-muted-foreground list-disc list-inside">
-                {coach.careerHighlights.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </div>
+          coach.quote && (
+            <blockquote class="text-base italic text-white/90 border-l-4 border-dragon-silver pl-4 leading-relaxed">
+              "{coach.quote}"
+            </blockquote>
           )
         }
-
-        <div class="mt-6 text-muted-foreground space-y-4 leading-relaxed">
-          {closingParagraphs.map((paragraph) => <p>{paragraph}</p>)}
-        </div>
-
-        <div class="mt-8">
-          <PrimaryButton href="/coaches">Meet All Coaches</PrimaryButton>
-        </div>
-      </div>
-
-      <div class="space-y-6 lg:sticky lg:top-24">
-        <div class="hidden lg:block rounded-2xl overflow-hidden shadow-dramatic">
-          <img
-            src="/coach-levie.jpg"
-            alt="Coach Travis Levie"
-            class="w-full aspect-[4/5] object-cover object-top"
-            loading="lazy"
-          />
-        </div>
-
-        <div class="rounded-2xl bg-dragon-dark text-white p-8 shadow-dramatic">
-          <h3 class="font-display text-2xl font-bold">{coach.name}</h3>
-          <p class="text-dragon-gold font-semibold mt-1">{coach.title}</p>
-          <p class="mt-4 text-white/80 text-sm leading-relaxed">{coach.credentials}</p>
-
-          <div class="grid grid-cols-3 gap-4 mt-8">
-            {
-              coach.stats.map((stat) => (
-                <div class="text-center">
-                  <div class="font-display text-2xl font-bold">{stat.value}</div>
-                  <div class="text-xs text-white/70 mt-1">{stat.label}</div>
-                </div>
-              ))
-            }
-          </div>
-
-          {
-            coach.quote && (
-              <blockquote class="mt-8 border-l-4 border-dragon-gold pl-4 italic text-white/90 text-sm leading-relaxed">
-                "{coach.quote}"
-              </blockquote>
-            )
-          }
-        </div>
       </div>
     </div>
   </SectionContainer>

@@ -43,18 +43,20 @@ export const navLinks = [
 ] as const;
 
 export const getInvolvedLinks = [
-  { href: "/join", label: "Join the Booster Club" },
-  { href: "/volunteers", label: "Volunteers" },
+  { href: "/join", label: "Join Our Members" },
+  { href: "/recognition", label: "Recognition Wall" },
   { href: "/fundraising", label: "Fundraising" },
-  { href: "/donations", label: "Donations" },
-  { href: "/sponsors", label: "Sponsors" },
+  { href: "/volunteers", label: "Volunteers" },
+  { href: "/donations", label: "Donate" },
 ] as const;
 
 export const moreLinks = [
   { href: "/about", label: "About Us" },
-  { href: "/recognition", label: "Recognition" },
+  { href: "/sponsors", label: "Sponsors" },
   { href: "/help", label: "Help" },
 ] as const;
+
+export const signInLink = { href: "/parents", label: "Sign In" } as const;
 
 export const footerLinks = [
   { href: "/teams", label: "Teams" },

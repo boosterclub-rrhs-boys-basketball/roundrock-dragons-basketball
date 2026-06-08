@@ -41,7 +41,7 @@ const pageTitle = title === site.name ? title : `${title} | ${site.shortName}`;
     <meta property="og:type" content="website" />
     <meta property="og:url" content={`${site.url}${Astro.url.pathname}`} />
   </head>
-  <body class="min-h-screen flex flex-col bg-white">
+  <body class="min-h-screen flex flex-col bg-background text-foreground font-sans">
     <Header />
     <main class="flex-1">
       <slot />

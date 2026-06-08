@@ -1,0 +1,22 @@
+export const parentsPage = {
+  title: "Parents Hub Access",
+  subtitle: "Enter the access code to continue",
+  hint: "Check YOUR calendar.",
+  placeholder: "Enter password",
+  submitLabel: "Access Parents Hub",
+  verifyingLabel: "Verifying...",
+  helpText: "Having trouble accessing?",
+  contactLabel: "Contact the booster club",
+  contact: {
+    title: "Contact Booster Club",
+    description: "Send a message to the Round Rock Basketball Booster Club.",
+    subject: "Parent Hub Access Help",
+    nameLabel: "Your Name",
+    emailLabel: "Your Email",
+    subjectLabel: "Subject",
+    messageLabel: "Message",
+    cancelLabel: "Cancel",
+    sendLabel: "Send Message",
+    sendingLabel: "Sending...",
+  },
+};

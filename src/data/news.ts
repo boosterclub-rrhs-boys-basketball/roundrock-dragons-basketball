@@ -52,7 +52,7 @@ export function getArticle(id: string) {
 
 export function formatNewsDate(date: string) {
   return new Date(date + "T12:00:00").toLocaleDateString("en-US", {
-    month: "numeric",
+    month: "short",
     day: "numeric",
     year: "numeric",
   });

@@ -1,0 +1,68 @@
+---
+import SectionContainer from "./SectionContainer.astro";
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  variant?: "dragon" | "minimal";
+}
+
+const { title, subtitle, variant = "dragon" } = Astro.props;
+const showLogos = variant !== "minimal";
+---
+
+<section class="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-secondary py-4">
+  <div class="pointer-events-none absolute inset-0 opacity-10" aria-hidden="true">
+    <div
+      class="absolute inset-0"
+      style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); background-repeat: repeat;"
+    >
+    </div>
+  </div>
+  <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-secondary/20 blur-xl" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-primary-foreground/10 blur-xl" aria-hidden="true"></div>
+
+  <SectionContainer class="relative z-10">
+    <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-3">
+      {
+        showLogos && (
+          <div class="hidden justify-center lg:flex">
+            <img src="/official-logo.png" alt="" class="h-16 w-auto animate-pulse object-contain drop-shadow-2xl" aria-hidden="true" />
+          </div>
+        )
+      }
+      <div class:list={["text-center", !showLogos && "lg:col-span-3"]}>
+        <h1 class="font-display text-3xl font-black uppercase tracking-wider text-primary-foreground text-shadow md:text-4xl">
+          {title}
+        </h1>
+        {
+          subtitle && (
+            <p class="mt-3 text-lg font-medium text-primary-foreground/90 text-shadow md:text-xl">
+              {subtitle}
+            </p>
+          )
+        }
+      </div>
+      {
+        showLogos && (
+          <div class="hidden justify-center lg:flex">
+            <img
+              src="/official-logo.png"
+              alt=""
+              class="h-16 w-auto animate-pulse object-contain drop-shadow-2xl"
+              style="animation-delay: 1s"
+              aria-hidden="true"
+            />
+          </div>
+        )
+      }
+    </div>
+    {
+      showLogos && (
+        <div class="mt-4 flex justify-center lg:hidden">
+          <img src="/official-logo.png" alt="" class="h-12 w-auto object-contain drop-shadow-xl" aria-hidden="true" />
+        </div>
+      )
+    }
+  </SectionContainer>
+</section>
