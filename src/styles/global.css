@@ -33,3 +33,11 @@ h1, h2, h3, h4, h5, h6 {
 .shadow-glow {
   box-shadow: 0 0 45px hsl(345 70% 42% / 0.5);
 }
+
+.shadow-dramatic {
+  box-shadow: 0 20px 65px -20px hsl(345 75% 30% / 0.55);
+}
+
+.hover\:shadow-dramatic:hover {
+  box-shadow: 0 20px 65px -20px hsl(345 75% 30% / 0.55);
+}

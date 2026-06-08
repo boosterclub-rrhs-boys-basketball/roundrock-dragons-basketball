@@ -1,7 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsCard from "../components/NewsCard.astro";
 import { site } from "../data/site";
-import { newsArticles, formatNewsDate } from "../data/news";
+import { newsArticles } from "../data/news";
 import { members } from "../data/members";
 import { coaches } from "../data/coaches";
 import { sponsors } from "../data/sponsors";
@@ -109,27 +110,15 @@ const upcomingGames = getUpcomingGames();
     </div>
   </section>
 
-  <section class="py-16 bg-dragon-maroon text-white">
+  <section class="py-8 bg-dragon-maroon-light">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
-        <h2 class="font-display text-3xl sm:text-4xl font-bold">Latest News</h2>
-        <p class="mt-2 text-white/80">Stay updated with Dragons basketball</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">Latest News</h2>
+        <p class="mt-2 text-white/90">Stay updated with Dragons basketball</p>
       </div>
 
       <div class="grid gap-6 md:grid-cols-3">
-        {
-          featuredNews.map((article) => (
-            <article class="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-6 flex flex-col">
-              <span class="text-xs uppercase tracking-wide text-dragon-gold font-semibold">{article.category}</span>
-              <time class="text-sm text-white/70 mt-2">{formatNewsDate(article.date)}</time>
-              <h3 class="font-display text-xl font-bold mt-3 flex-1">{article.title}</h3>
-              <p class="text-white/80 mt-3 text-sm line-clamp-3">{article.excerpt}</p>
-              <a href={`/news/${article.id}`} class="mt-4 text-dragon-gold font-semibold hover:underline">
-                Read More
-              </a>
-            </article>
-          ))
-        }
+        {featuredNews.map((article) => <NewsCard article={article} darkSection />)}
       </div>
 
       <div class="text-center mt-10">

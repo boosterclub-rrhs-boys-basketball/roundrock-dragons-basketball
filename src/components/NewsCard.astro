@@ -1,0 +1,64 @@
+---
+import type { NewsArticle } from "../data/news";
+import { formatNewsDate } from "../data/news";
+
+interface Props {
+  article: NewsArticle;
+  darkSection?: boolean;
+}
+
+const { article, darkSection = false } = Astro.props;
+---
+
+<article
+  class:list={[
+    "group rounded-lg border bg-white text-gray-900 shadow-sm overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-dramatic",
+    darkSection ? "border-white/20" : "border-gray-200",
+  ]}
+>
+  {
+    article.image && (
+      <div class="relative h-48 overflow-hidden">
+        <img
+          src={article.image}
+          alt=""
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+          loading="lazy"
+        />
+        <div class="absolute top-4 left-4">
+          <span class="bg-dragon-maroon text-white px-2 py-1 rounded text-xs font-semibold">
+            {article.category}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="flex flex-col p-6">
+    {
+      !article.image && (
+        <span class="text-xs uppercase tracking-wide text-dragon-maroon font-semibold mb-2">
+          {article.category}
+        </span>
+      )
+    }
+    <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M8 2v4M16 2v4M3 10h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+      </svg>
+      <time datetime={article.date}>{formatNewsDate(article.date)}</time>
+    </div>
+    <h3 class="font-display text-xl font-semibold tracking-tight flex-1">
+      <a href={`/news/${article.id}`} class="hover:text-dragon-maroon transition-colors">
+        {article.title}
+      </a>
+    </h3>
+    <p class="text-gray-600 mt-3 text-sm line-clamp-3">{article.excerpt}</p>
+    <a
+      href={`/news/${article.id}`}
+      class="mt-4 text-dragon-maroon font-semibold hover:underline inline-flex items-center gap-1"
+    >
+      Read More
+    </a>
+  </div>
+</article>
