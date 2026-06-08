@@ -1,11 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dragon-maroon: #8b0000;
-  --color-dragon-maroon-dark: #6b0000;
-  --color-dragon-maroon-light: #a52a2a;
+  --color-dragon-maroon: hsl(345 75% 32%);
+  --color-dragon-maroon-dark: hsl(345 80% 22%);
+  --color-dragon-maroon-light: hsl(345 70% 42%);
+  --color-dragon-silver: hsl(0 0% 80%);
+  --color-dragon-silver-fg: hsl(0 0% 15%);
   --color-dragon-gold: #c9a227;
   --color-dragon-dark: #1a1a1a;
+  --color-nav-gray: hsl(0 0% 35%);
   --font-display: "Oswald", sans-serif;
   --font-body: "Montserrat", sans-serif;
 }
@@ -21,4 +24,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
+}
+
+.text-shadow {
+  text-shadow: 0 2px 8px rgb(0 0 0 / 35%);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 45px hsl(345 70% 42% / 0.5);
 }
