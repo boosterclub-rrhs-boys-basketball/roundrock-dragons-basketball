@@ -1,0 +1,26 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  light?: boolean;
+  class?: string;
+}
+
+const { title, subtitle, light = false, class: className = "" } = Astro.props;
+---
+
+<div class:list={["text-center mb-8", className]}>
+  <h2
+    class:list={[
+      "font-display text-3xl sm:text-4xl font-bold",
+      light ? "text-white" : "text-dragon-maroon",
+    ]}
+  >
+    {title}
+  </h2>
+  {
+    subtitle && (
+      <p class:list={["mt-2", light ? "text-white/90" : "text-muted-foreground"]}>{subtitle}</p>
+    )
+  }
+</div>

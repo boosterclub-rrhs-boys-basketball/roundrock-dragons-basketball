@@ -41,6 +41,10 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 20px 65px -20px hsl(345 75% 30% / 0.55);
 }
 
+.shadow-nav {
+  box-shadow: 0 4px 14px hsl(0 0% 0% / 0.18);
+}
+
 .hover\:shadow-dramatic:hover {
   box-shadow: 0 20px 65px -20px hsl(345 75% 30% / 0.55);
 }

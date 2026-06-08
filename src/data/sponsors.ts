@@ -13,6 +13,38 @@ export type Sponsor = {
   featured?: boolean;
 };
 
+export const featuredSponsorStats = [
+  { value: "50K+", label: "Community Reach" },
+  { value: "95%", label: "Engagement Rate" },
+  { value: "Local", label: "Community Focus" },
+  { value: "High", label: "Impact Level" },
+] as const;
+
+export const whySponsorItems = [
+  {
+    title: "Community Visibility",
+    description: "Reach thousands of local families and basketball enthusiasts",
+  },
+  {
+    title: "Youth Investment",
+    description: "Support character building and athletic development",
+  },
+  {
+    title: "Brand Recognition",
+    description: "Logo placement and marketing opportunities at events",
+  },
+] as const;
+
+export const investmentStats = [
+  { value: "50K+", label: "People Annually" },
+  { value: "15+", label: "Local Events" },
+  { value: "500+", label: "Social Media" },
+  { value: "Year-Round", label: "Exposure" },
+] as const;
+
+export const featuredSponsorBlurb =
+  "Proudly supporting Dragons excellence and investing in the future of youth athletics in our community.";
+
 export const sponsors: Sponsor[] = [
   { name: "Raising Cane's Chicken Fingers", tier: "Varsity", website: "https://www.raisingcanes.com", featured: true },
   { name: "Rock Ridge Family Dentistry", tier: "Captain", website: "https://rockridgefamilydentistry.com" },

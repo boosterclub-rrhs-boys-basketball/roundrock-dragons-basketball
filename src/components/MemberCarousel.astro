@@ -1,0 +1,40 @@
+---
+import type { Member } from "../data/members";
+import Carousel from "./Carousel.astro";
+import SectionContainer from "./SectionContainer.astro";
+import SectionHeading from "./SectionHeading.astro";
+import PrimaryButton from "./PrimaryButton.astro";
+
+interface Props {
+  members: Member[];
+}
+
+const { members } = Astro.props;
+---
+
+<section class="py-8 bg-gray-50">
+  <SectionContainer>
+    <SectionHeading
+      title="Meet Our Dragons Family"
+      subtitle="Hear from the incredible members who make our basketball program possible"
+    />
+
+    <Carousel id="members-carousel" class="max-w-4xl mx-auto">
+      {
+        members.map((member) => (
+          <blockquote class="rounded-xl bg-white border border-gray-200 p-8 md:p-10 shadow-sm mx-2">
+            <span class="inline-block px-3 py-1 rounded-full bg-dragon-maroon/10 text-dragon-maroon text-xs font-bold uppercase tracking-wide">
+              {member.tier}
+            </span>
+            <h3 class="font-display text-2xl md:text-3xl font-bold mt-4 text-card-foreground">{member.name}</h3>
+            <p class="mt-4 text-muted-foreground leading-relaxed">{member.quote}</p>
+          </blockquote>
+        ))
+      }
+    </Carousel>
+
+    <div class="text-center mt-8">
+      <PrimaryButton href="/members">View All Members</PrimaryButton>
+    </div>
+  </SectionContainer>
+</section>

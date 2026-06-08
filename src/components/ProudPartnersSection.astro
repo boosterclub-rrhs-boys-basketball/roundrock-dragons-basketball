@@ -1,0 +1,126 @@
+---
+import {
+  sponsors,
+  featuredSponsorStats,
+  whySponsorItems,
+  investmentStats,
+  featuredSponsorBlurb,
+} from "../data/sponsors";
+import { site } from "../data/site";
+import SectionContainer from "./SectionContainer.astro";
+import SectionHeading from "./SectionHeading.astro";
+import PrimaryButton from "./PrimaryButton.astro";
+import OutlineButton from "./OutlineButton.astro";
+import Carousel from "./Carousel.astro";
+
+const featuredSponsors = sponsors.filter((s) => s.featured);
+---
+
+<section class="py-8 bg-gray-50">
+  <SectionContainer>
+    <SectionHeading title="Proud Partners" subtitle="Supporting Excellence in Youth Basketball" />
+
+    {
+      featuredSponsors.length > 0 && (
+        <div class="mb-12">
+          <Carousel id="featured-sponsors" showDots={featuredSponsors.length > 1}>
+            {featuredSponsors.map((sponsor) => (
+              <div class="mx-2">
+                <div class="rounded-2xl bg-white border border-gray-200 shadow-sm overflow-hidden">
+                  <div class="bg-gradient-primary px-6 py-3 text-center">
+                    <span class="text-white text-sm font-bold tracking-wide">⭐ Featured Partner</span>
+                  </div>
+                  <div class="p-8 md:p-10 text-center">
+                    <span class="text-xs uppercase tracking-wide text-dragon-maroon font-bold">{sponsor.tier}</span>
+                    <h3 class="font-display text-2xl md:text-3xl font-bold mt-2 text-card-foreground">{sponsor.name}</h3>
+                    <p class="mt-4 text-muted-foreground max-w-2xl mx-auto">{featuredSponsorBlurb}</p>
+                    {
+                      sponsor.website && (
+                        <a
+                          href={sponsor.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="inline-flex mt-6 text-dragon-maroon font-semibold hover:underline"
+                        >
+                          Visit Their Website →
+                        </a>
+                      )
+                    }
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Carousel>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-4xl mx-auto">
+            {featuredSponsorStats.map((stat) => (
+              <div class="rounded-xl bg-white border border-gray-200 p-4 text-center shadow-sm">
+                <div class="font-display text-2xl font-bold text-dragon-maroon">{stat.value}</div>
+                <div class="text-xs text-muted-foreground mt-1">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <div class="mb-12">
+      <h3 class="font-display text-2xl font-bold text-dragon-maroon text-center mb-8">Why Sponsor the Dragons?</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        {whySponsorItems.map((item) => (
+          <div class="rounded-xl bg-white border border-gray-200 p-6 text-center shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-dramatic">
+            <h4 class="font-display text-lg font-bold text-dragon-maroon">{item.title}</h4>
+            <p class="mt-2 text-sm text-muted-foreground">{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-12">
+      <h3 class="font-display text-2xl font-bold text-dragon-maroon text-center mb-8">Your Investment Reaches</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        {investmentStats.map((stat) => (
+          <div class="rounded-xl bg-white border border-gray-200 p-6 text-center shadow-sm">
+            <div class="font-display text-2xl font-bold text-dragon-maroon">{stat.value}</div>
+            <div class="text-sm text-muted-foreground mt-1">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-12">
+      <h3 class="font-display text-2xl font-bold text-dragon-maroon text-center mb-8">Our Complete Sponsor Family</h3>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {sponsors.map((sponsor) => (
+          <div class="rounded-xl bg-white border border-gray-200 p-6 text-center shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-dramatic">
+            <h4 class="font-display text-base font-bold text-card-foreground">{sponsor.name}</h4>
+            <span class="inline-block mt-2 text-xs uppercase tracking-wide text-dragon-maroon font-bold">{sponsor.tier}</span>
+            {
+              sponsor.website && (
+                <a
+                  href={sponsor.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block mt-3 text-sm text-dragon-maroon hover:underline"
+                >
+                  Visit Website
+                </a>
+              )
+            }
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="text-center rounded-2xl bg-white border border-gray-200 p-8 md:p-10 shadow-sm">
+      <h3 class="font-display text-2xl font-bold text-dragon-maroon">Join the Winning Team</h3>
+      <p class="mt-2 text-muted-foreground max-w-xl mx-auto">
+        Partner with the Dragons and watch your business grow while supporting youth athletics
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <PrimaryButton href="/sponsors">View Sponsorship Packages</PrimaryButton>
+        <OutlineButton href={`mailto:${site.email}`}>Contact Us Today</OutlineButton>
+      </div>
+    </div>
+  </SectionContainer>
+</section>

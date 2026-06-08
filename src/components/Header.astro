@@ -4,8 +4,8 @@ import { navLinks, getInvolvedLinks, moreLinks, site } from "../data/site";
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="sticky top-0 z-50 bg-dragon-dark/95 backdrop-blur border-b border-white/10">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<header class="sticky top-0 z-50 bg-nav-gray shadow-nav">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12">
     <div class="flex items-center justify-between h-16 lg:h-20">
       <a href="/" class="flex items-center gap-3 shrink-0">
         <img src="/dragons-logo.png" alt="Dragons logo" class="h-10 w-10 object-contain" />
@@ -84,8 +84,8 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 
-  <div id="mobile-menu" class="hidden xl:hidden border-t border-white/10 bg-dragon-dark">
-    <nav class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
+  <div id="mobile-menu" class="hidden xl:hidden border-t border-white/10 bg-nav-gray">
+    <nav class="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
       {
         [...navLinks, ...getInvolvedLinks, ...moreLinks].map((link) => (
           <a

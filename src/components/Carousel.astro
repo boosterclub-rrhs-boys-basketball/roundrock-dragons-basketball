@@ -1,0 +1,109 @@
+---
+interface Props {
+  id: string;
+  class?: string;
+  showDots?: boolean;
+}
+
+const { id, class: className = "", showDots = true } = Astro.props;
+---
+
+<div class:list={["relative", className]} data-carousel={id}>
+  <div class="overflow-hidden" data-carousel-viewport>
+    <div class="flex transition-transform duration-500 ease-out" data-carousel-track>
+      <slot />
+    </div>
+  </div>
+
+  <div class="flex items-center justify-center gap-4 mt-6">
+    <button
+      type="button"
+      class="inline-flex items-center justify-center h-10 w-10 rounded-full border-2 border-dragon-maroon text-dragon-maroon hover:bg-dragon-maroon hover:text-white transition-colors"
+      data-carousel-prev
+      aria-label="Previous slide"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </button>
+
+    {
+      showDots && (
+        <div class="flex gap-2" data-carousel-dots aria-hidden="true" />
+      )
+    }
+
+    <button
+      type="button"
+      class="inline-flex items-center justify-center h-10 w-10 rounded-full border-2 border-dragon-maroon text-dragon-maroon hover:bg-dragon-maroon hover:text-white transition-colors"
+      data-carousel-next
+      aria-label="Next slide"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M9 18l6-6-6-6" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  function initCarousels() {
+    document.querySelectorAll("[data-carousel]").forEach((root) => {
+      if (root.dataset.carouselReady === "true") return;
+      root.dataset.carouselReady = "true";
+
+      const track = root.querySelector("[data-carousel-track]");
+      const slides = track ? Array.from(track.children) : [];
+      const prev = root.querySelector("[data-carousel-prev]");
+      const next = root.querySelector("[data-carousel-next]");
+      const dotsContainer = root.querySelector("[data-carousel-dots]");
+
+      if (!track || slides.length === 0) return;
+
+      let index = 0;
+
+      const update = () => {
+        track.style.transform = `translateX(-${index * 100}%)`;
+        slides.forEach((slide, i) => {
+          slide.style.flex = "0 0 100%";
+          slide.style.minWidth = "100%";
+          slide.setAttribute("aria-hidden", String(i !== index));
+        });
+        dotsContainer?.querySelectorAll("button").forEach((dot, i) => {
+          dot.classList.toggle("bg-dragon-maroon", i === index);
+          dot.classList.toggle("bg-gray-300", i !== index);
+        });
+      };
+
+      if (dotsContainer) {
+        dotsContainer.innerHTML = "";
+        slides.forEach((_, i) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "h-2.5 w-2.5 rounded-full bg-gray-300 transition-colors";
+          dot.setAttribute("aria-label", `Go to slide ${i + 1}`);
+          dot.addEventListener("click", () => {
+            index = i;
+            update();
+          });
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      prev?.addEventListener("click", () => {
+        index = (index - 1 + slides.length) % slides.length;
+        update();
+      });
+
+      next?.addEventListener("click", () => {
+        index = (index + 1) % slides.length;
+        update();
+      });
+
+      update();
+    });
+  }
+
+  initCarousels();
+  document.addEventListener("astro:page-load", initCarousels);
+</script>
